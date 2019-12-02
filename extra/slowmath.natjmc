@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NonUserCode xmlns="http://schemas.microsoft.com/vstudio/debugger/jmc/2013">
+
+  <File Name="*\include\slowmath\*"/>
+  
+  <!-- CRT Exception implementation-->
+  <Function Name="slowmath::detail::throw_error_handler::make_error" ExceptionImplementation="true" />
+  <Function Name="slowmath::detail::assert_error_handler::make_error" ExceptionImplementation="true" />
+</NonUserCode>
