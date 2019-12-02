@@ -6,7 +6,6 @@
 #include <limits>
 #include <climits> // for CHAR_BIT
 #include <cstdint>
-#include <sstream>
 
 #include <stdint.h>
 

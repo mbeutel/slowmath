@@ -26,7 +26,6 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
             <array>
             <tuple>
             <limits>
-            <iosfwd>
             <sstream>
             <utility>
             <numeric>

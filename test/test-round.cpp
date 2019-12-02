@@ -6,7 +6,7 @@
 #include <slowmath/arithmetic.hpp>
 
 
-TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili() for signed types", "[arithmetic]", int)
+TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili() for signed types", "[round]", int)
 {
     static constexpr auto iMax = std::numeric_limits<TestType>::max();
 
@@ -33,7 +33,7 @@ TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili() for signed 
 
 }
 
-TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili()", "[arithmetic]", unsigned, int)
+TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili()", "[round]", unsigned, int)
 {
     static constexpr auto iMax = std::numeric_limits<TestType>::max();
 

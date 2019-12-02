@@ -8,7 +8,7 @@
 
 // TODO: add comprehensive tests for single-factor overloads of factorize_floori() and factorize_ceili()
 
-TEMPLATE_TEST_CASE("factorize_floori(), factorize_ceili()", "[arithmetic]", int)
+TEMPLATE_TEST_CASE("factorize_floori(), factorize_ceili()", "[factorize]", int)
 {
     SECTION("basic correctness")
     {

@@ -6,7 +6,7 @@
 #include <slowmath/arithmetic.hpp>
 
 
-TEMPLATE_TEST_CASE("sqrti()", "[arithmetic]", unsigned, int)
+TEMPLATE_TEST_CASE("sqrti()", "[pow][log]", unsigned, int)
 {
     static constexpr auto iMax = std::numeric_limits<TestType>::max();
 
