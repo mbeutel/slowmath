@@ -41,7 +41,7 @@ template <typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool are_integral_ari
 
 template <bool Signed, typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_0_v = mconjunction<std::integral_constant<bool, std::is_signed<integral_value_type<Vs>>::value == Signed>...>::value;
 template <typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v = false;
-template <> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v<> = true;
+template <> constexpr bool have_same_signedness_v<> = true;
 template <typename V0, typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v<V0, Vs...> = have_same_signedness_0_v<std::is_signed<integral_value_type<V0>>::value, Vs...>;
 
 template <typename V> struct wider_type_;
