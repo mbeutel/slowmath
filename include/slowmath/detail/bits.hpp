@@ -3,6 +3,7 @@
 #define INCLUDED_SLOWMATH_DETAIL_BITS_HPP_
 
 
+#include <climits>      // for CHAR_BIT
 #include <system_error> // for errc
 
 #include <gsl/gsl-lite.hpp> // for Expects()
