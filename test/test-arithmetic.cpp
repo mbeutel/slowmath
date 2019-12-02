@@ -9,7 +9,6 @@
 TEMPLATE_TEST_CASE("absi(), negate() for signed types", "[arithmetic]", std::int8_t, std::int32_t, std::int64_t)
 {
     static constexpr auto iMin = std::numeric_limits<TestType>::min();
-    static constexpr auto iMax = std::numeric_limits<TestType>::max();
 
     SECTION("basic correctness")
     {
@@ -33,8 +32,6 @@ TEMPLATE_TEST_CASE("absi(), negate() for signed types", "[arithmetic]", std::int
 
 TEMPLATE_TEST_CASE("absi(), negate() for unsigned types", "[arithmetic]", std::uint8_t, std::uint32_t, std::uint64_t)
 {
-    static constexpr auto iMax = std::numeric_limits<TestType>::max();
-
     SECTION("zero")
     {
         CHECK(slowmath::absi(TestType(0)) == TestType(0));

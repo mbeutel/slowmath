@@ -8,8 +8,6 @@
 
 TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili() for signed types", "[round]", int)
 {
-    static constexpr auto iMax = std::numeric_limits<TestType>::max();
-
     SECTION("enforces preconditions")
     {
         using Tuple = std::tuple<TestType, TestType>;
