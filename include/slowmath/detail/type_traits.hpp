@@ -39,10 +39,11 @@ template <typename T0, typename... Ts> struct mconjunction : mconjunction_<T0::v
 
 template <typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool are_integral_arithmetic_types_v = mconjunction<is_nonbool_integral<Vs>...>::value;
 
-template <bool Signed, typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_0_v = mconjunction<std::integral_constant<bool, std::is_signed<integral_value_type<Vs>>::value == Signed>...>::value;
-template <typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v = false;
-template <> constexpr bool have_same_signedness_v<> = true;
-template <typename V0, typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v<V0, Vs...> = have_same_signedness_0_v<std::is_signed<integral_value_type<V0>>::value, Vs...>;
+template <bool Signed, typename... Vs> using have_same_signedness_0 = mconjunction<std::integral_constant<bool, std::is_signed<integral_value_type<Vs>>::value == Signed>...>;
+template <typename... Vs> struct have_same_signedness;
+template <typename V0, typename... Vs> struct have_same_signedness<V0, Vs...> : have_same_signedness_0<std::is_signed<integral_value_type<V0>>::value, Vs...> { };
+template <> struct have_same_signedness<> : std::true_type { };
+template <typename... Vs> SLOWMATH_DETAIL_CONSTEXPR_INLINE bool have_same_signedness_v = have_same_signedness<Vs...>::value;
 
 template <typename V> struct wider_type_;
 template <typename V> using wider_type = typename wider_type_<V>::type;
