@@ -631,7 +631,7 @@ log_ceili(X x, B b)
 
 
     //ᅟ
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ + r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ + r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`.
     //
 template <typename X, typename B>
@@ -646,7 +646,7 @@ factorize_floori(X x, B b)
 
 
     //ᅟ
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ - r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename B>
@@ -660,7 +660,7 @@ factorize_ceili(X x, B b)
 }
 
     //ᅟ
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ - r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename B>
@@ -674,7 +674,7 @@ try_factorize_ceili(X x, B b)
 }
 
     //ᅟ
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ - r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename B>
@@ -689,7 +689,7 @@ factorize_ceili_or_throw(X x, B b)
 
 
     //ᅟ
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`.
     //
 template <typename X, typename A, typename B>
@@ -704,7 +704,7 @@ factorize_floori(X x, A a, B b)
 
 
     //ᅟ
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename A, typename B>
@@ -718,7 +718,7 @@ factorize_ceili(X x, A a, B b)
 }
 
     //ᅟ
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename A, typename B>
@@ -732,7 +732,7 @@ try_factorize_ceili(X x, A a, B b)
 }
 
     //ᅟ
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename A, typename B>

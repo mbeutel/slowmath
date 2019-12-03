@@ -27,7 +27,7 @@ namespace detail
 {
 
 
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ + r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ + r with r ≥ 0 minimal.
 template <typename X, typename B>
 constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X x, B b)
 {
@@ -76,7 +76,7 @@ constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X 
 }
 
 
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r,{ {b,e} }) such that x = bᵉ - r with r ≥ 0 minimal.
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
 template <typename EH, typename X, typename B>
 constexpr result_t<EH, factorization<common_integral_value_type<X, B>, 1>> factorize_ceili(X x, B b)
 {
@@ -100,7 +100,7 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, B>, 1>> facto
 }
 
 
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
 template <typename X, typename A, typename B>
 constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori(X x, A a, B b)
 {
@@ -148,7 +148,7 @@ constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori
 }
 
 
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ {a,i}, {b,j} }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
 template <typename EH, typename X, typename A, typename B>
 constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, 2>> factorize_ceili(X x, A a, B b)
 {
