@@ -132,9 +132,11 @@ constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori
 
             // give factors b as long as y ≤ x
             // (note that y ∙ b overflowing implies y ∙ b > x)
-        while (detail::can_multiply(y, b) && y * b <= x)
+        for (;;)
         {
-            y *= b;
+            auto ybResult = detail::multiply<try_error_handler>(y, b);
+            if (ybResult.ec != std::errc{ } || ybResult.value > x) break;
+            y = ybResult.value;
             ++j;
         }
 

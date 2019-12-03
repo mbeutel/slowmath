@@ -77,160 +77,66 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add_narrow(A a, B b)
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_wide_unsigned(A a, B b)
-{
-    using V = common_integral_value_type<A, B>;
-
-    V result = a + b;
-    if (result < a || result < b) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(result));
-}
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_wide_signed(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>> add_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using U = std::make_unsigned_t<V>;
 
     V result = V(U(a) + U(b));
-    if ((a <  0 && b <  0 && result >= 0)
-     || (a >= 0 && b >= 0 && result <  0))
+    if (std::is_signed<V>::value)
     {
-        return EH::make_error(std::errc::value_too_large);
+        if ((a <  0 && b <  0 && result >= 0)
+         || (a >= 0 && b >= 0 && result <  0))
+        {
+            return EH::make_error(std::errc::value_too_large);
+        }
     }
-    return EH::make_result(V(result));
+    else
+    {
+        if (result < a || result < b) return EH::make_error(std::errc::value_too_large);
+    }
+    return EH::make_result(result);
 }
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename BC, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::true_type /*isNarrow*/, BC /*isSigned*/, A a, B b)
+template <typename EH, typename A, typename B>
+constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::true_type /*isNarrow*/, A a, B b)
 {
     return detail::add_narrow<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::false_type /*isNarrow*/, std::false_type /*isSigned*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::false_type /*isNarrow*/, A a, B b)
 {
-    return detail::add_wide_unsigned<EH>(a, b);
+    return detail::add_wide<EH>(a, b);
 }
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::false_type /*isNarrow*/, std::true_type /*isSigned*/, A a, B b)
-{
-    return detail::add_wide_signed<EH>(a, b);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> add(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (has_wider_type_v<V>) return detail::add_narrow<EH>(a, b);
-    else if constexpr (std::is_signed_v<V>) return detail::add_wide_signed<EH>(a, b);
-    else return detail::add_wide_unsigned<EH>(a, b);
-#else // gsl_CPP17_OR_GREATER
-    return detail::add_0<EH>(has_wider_type<V>{ }, std::is_signed<V>{ }, a, b);
-#endif // gsl_CPP17_OR_GREATER
+    return detail::add_0<EH>(has_wider_type<V>{ }, a, b);
 }
 
 
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> subtract_unsigned(A a, B b)
-{
-    using V = common_integral_value_type<A, B>;
-
-    if (a < b) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(a - b));
-}
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> subtract_signed(A a, B b)
-{
-    using V = common_integral_value_type<A, B>;
-
-    if ((b > 0 && a < min_v<V> + b)
-     || (b < 0 && a > max_v<V> + b))
-    {
-        return EH::make_error(std::errc::value_too_large);
-    }
-    return EH::make_result(V(a - b));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> subtract_0(std::false_type /*isSigned*/, A a, B b)
-{
-    return detail::subtract_unsigned<EH>(a, b);
-}
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> subtract_0(std::true_type /*isSigned*/, A a, B b)
-{
-    return detail::subtract_signed<EH>(a, b);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V>) return detail::subtract_signed<EH>(a, b);
-    else return detail::subtract_unsigned<EH>(a, b);
-#else // gsl_CPP17_OR_GREATER
-    return detail::subtract_0<EH>(std::is_signed<V>{ }, a, b);
-#endif // gsl_CPP17_OR_GREATER
+    if (std::is_signed<V>::value)
+    {
+        if ((b > 0 && a < min_v<V> + b)
+        || (b < 0 && a > max_v<V> + b))
+        {
+            return EH::make_error(std::errc::value_too_large);
+        }
+    }
+    else
+    {
+        if (a < b) return EH::make_error(std::errc::value_too_large);
+    }
+
+    return EH::make_result(V(a - b));
 }
 
-
-template <typename A, typename B>
-constexpr bool can_multiply_narrow(A a, B b) noexcept
-{
-    using V = common_integral_value_type<A, B>;
-    using W = wider_type<V>;
-
-    W result = W(a) * W(b);
-    return result >= min_v<V> && result <= max_v<V>;
-}
-template <typename A, typename B>
-constexpr bool can_multiply_wide_unsigned(A a, B b) noexcept
-{
-    using V = common_integral_value_type<A, B>;
-
-    return !(b > 0 && a > max_v<V> / b);
-}
-template <typename A, typename B>
-constexpr bool can_multiply_wide_signed(A a, B b) noexcept
-{
-    using V = common_integral_value_type<A, B>;
-
-    return !(   (a > 0 && ((b > 0 && a > max_v<V> / b) || (b <= 0 && b < min_v<V> / a)))
-             || (a < 0 && ((b > 0 && a < min_v<V> / b) || (b <= 0 && b < max_v<V> / a))));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename BC, typename A, typename B>
-constexpr bool can_multiply_0(std::true_type /*isNarrow*/, BC /*isSigned*/, A a, B b)
-{
-    return detail::can_multiply_narrow(a, b);
-}
-template <typename A, typename B>
-    constexpr bool can_multiply_0(std::false_type /*isNarrow*/, std::false_type /*isSigned*/, A a, B b)
-{
-    return detail::can_multiply_wide_unsigned(a, b);
-}
-template <typename A, typename B>
-    constexpr bool can_multiply_0(std::false_type /*isNarrow*/, std::true_type /*isSigned*/, A a, B b)
-{
-    return detail::can_multiply_wide_signed(a, b);
-}
-#endif // !gsl_CPP17_OR_GREATER
-template <typename A, typename B>
-constexpr bool can_multiply(A a, B b)
-{
-    using V = common_integral_value_type<A, B>;
-
-#if gsl_CPP17_OR_GREATER
-    if constexpr (has_wider_type_v<V>) return detail::can_multiply_narrow(a, b);
-    else if constexpr (std::is_signed_v<V>) return detail::can_multiply_wide_signed(a, b);
-    else return detail::can_multiply_wide_unsigned(a, b);
-#else // gsl_CPP17_OR_GREATER
-    return detail::can_multiply_0(has_wider_type<V>{ }, std::is_signed<V>{ }, a, b);
-#endif // gsl_CPP17_OR_GREATER
-}
 
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B b)
@@ -243,50 +149,41 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B 
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide_unsigned(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
-    if (!detail::can_multiply_wide_unsigned(a, b)) return EH::make_error(std::errc::value_too_large);
+    if (std::is_signed<V>::value)
+    {
+        if (   (a > 0 && ((b > 0 && a > max_v<V> / b) || (b <= 0 && b < min_v<V> / a)))
+            || (a < 0 && ((b > 0 && a < min_v<V> / b) || (b <= 0 && b < max_v<V> / a))))
+        {
+            return EH::make_error(std::errc::value_too_large);
+        }
+    }
+    else
+    {
+        if (b > 0 && a > max_v<V> / b) return EH::make_error(std::errc::value_too_large);
+    }
+
     return EH::make_result(V(a * b));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide_signed(A a, B b)
-{
-    using V = common_integral_value_type<A, B>;
-
-    if (!detail::can_multiply_wide_signed(a, b)) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(a * b));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename BC, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::true_type /*isNarrow*/, BC /*isSigned*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::true_type /*isNarrow*/, A a, B b)
 {
     return detail::multiply_narrow<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::false_type /*isNarrow*/, std::false_type /*isSigned*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::false_type /*isNarrow*/, A a, B b)
 {
-    return detail::multiply_wide_unsigned<EH>(a, b);
+    return detail::multiply_wide<EH>(a, b);
 }
-template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::false_type /*isNarrow*/, std::true_type /*isSigned*/, A a, B b)
-{
-    return detail::multiply_wide_signed<EH>(a, b);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> multiply(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (has_wider_type_v<V>) return detail::multiply_narrow<EH>(a, b);
-    else if constexpr (std::is_signed_v<V>) return detail::multiply_wide_signed<EH>(a, b);
-    else return detail::multiply_wide_unsigned<EH>(a, b);
-#else // gsl_CPP17_OR_GREATER
-    return detail::multiply_0<EH>(has_wider_type<V>{ }, std::is_signed<V>{ }, a, b);
-#endif // gsl_CPP17_OR_GREATER
+    return detail::multiply_0<EH>(has_wider_type<V>{ }, a, b);
 }
 
 

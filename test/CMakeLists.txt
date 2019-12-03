@@ -44,7 +44,7 @@ add_library(test-slowmath-runner OBJECT
     "main.cpp")
 
 # test targets
-set(SOURCES
+add_executable(test-slowmath-cxx14
     "legacy-tests.cpp"
     "test-arithmetic.cpp"
     "test-bits.cpp"
@@ -53,8 +53,8 @@ set(SOURCES
     "test-gcd-lcm.cpp"
     "test-pow-log.cpp"
     "test-round.cpp")
-add_executable(test-slowmath-cxx14 ${SOURCES})
-add_executable(test-slowmath-cxx17 ${SOURCES})
+add_executable(test-slowmath-cxx17
+    "test-gcd-lcm.cpp")
 
 # compiler settings
 include(CMakeshift/TargetCompileSettings)
