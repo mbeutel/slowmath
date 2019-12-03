@@ -879,7 +879,7 @@ gcd_or_throw(A a, B b)
 
     return detail::gcd<detail::throw_error_handler>(a, b);
 }
-# endif gsl_HAVE_EXCEPTIONS
+# endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
