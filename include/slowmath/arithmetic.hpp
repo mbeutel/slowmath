@@ -6,7 +6,7 @@
 #include <array>
 #include <system_error> // for errc
 
-#include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER, gsl_NODISCARD, gsl_constexpr20
+#include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER, gsl_HAVE_EXCEPTIONS, gsl_NODISCARD, gsl_constexpr20
 
 #include <slowmath/detail/type_traits.hpp>    // for are_integral_arithmetic_types_v<>, have_same_signedness_v<>
 #include <slowmath/detail/error-handling.hpp> // for assert_error_handler, try_error_handler, throw_error_handler
@@ -77,6 +77,7 @@ try_absi(V v)
     return detail::absi<detail::try_error_handler>(v);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes |v|.
     // Throws `std::system_error` upon underflow.
@@ -89,6 +90,7 @@ absi_or_throw(V v)
 
     return detail::absi<detail::throw_error_handler>(v);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -117,6 +119,7 @@ try_negate(V v)
     return detail::negate<detail::try_error_handler>(v);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes -v.
     // Throws `std::system_error` upon underflow.
@@ -129,6 +132,7 @@ negate_or_throw(V v)
 
     return detail::negate<detail::throw_error_handler>(v);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -159,6 +163,7 @@ try_add(A a, B b)
     return detail::add<detail::try_error_handler>(a, b);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes a + b.
     // Throws `std::system_error` upon overflow.
@@ -172,6 +177,7 @@ add_or_throw(A a, B b)
 
     return detail::add<detail::throw_error_handler>(a, b);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -202,6 +208,7 @@ try_subtract(A a, B b)
     return detail::subtract<detail::try_error_handler>(a, b);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes a - b.
     // Throws `std::system_error` upon overflow.
@@ -215,6 +222,7 @@ subtract_or_throw(A a, B b)
 
     return detail::subtract<detail::throw_error_handler>(a, b);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -245,6 +253,7 @@ try_multiply(A a, B b)
     return detail::multiply<detail::try_error_handler>(a, b);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes a ∙ b.
     // Throws `std::system_error` upon overflow.
@@ -258,6 +267,7 @@ multiply_or_throw(A a, B b)
 
     return detail::multiply<detail::throw_error_handler>(a, b);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -292,6 +302,7 @@ try_divide(N n, D d)
     return detail::divide<detail::try_error_handler>(n, d);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes n ÷ d for d ≠ 0.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -307,6 +318,7 @@ divide_or_throw(N n, D d)
 
     return detail::divide<detail::throw_error_handler>(n, d);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -341,6 +353,7 @@ try_modulo(N n, D d)
     return detail::modulo<detail::try_error_handler>(n, d);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes n mod d for d ≠ 0.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -356,6 +369,7 @@ modulo_or_throw(N n, D d)
 
     return detail::modulo<detail::throw_error_handler>(n, d);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -384,6 +398,7 @@ try_square(V v)
     return detail::square<detail::try_error_handler>(v, v);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes a ∙ b.
     // Throws `std::system_error` upon overflow.
@@ -396,6 +411,7 @@ square_or_throw(V v)
 
     return detail::square<detail::throw_error_handler>(v, v);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -430,6 +446,7 @@ try_shift_left(X x, S s)
     return detail::shift_left<detail::try_error_handler>(x, s);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -445,6 +462,7 @@ shift_left_or_throw(X x, S s)
 
     return detail::shift_left<detail::throw_error_handler>(x, s);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -479,6 +497,7 @@ try_shift_right(X x, S s)
     return detail::shift_right<detail::try_error_handler>(x, s);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -494,6 +513,7 @@ shift_right_or_throw(X x, S s)
 
     return detail::shift_right<detail::throw_error_handler>(x, s);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -526,6 +546,7 @@ try_powi(B b, E e)
     return detail::powi<detail::try_error_handler>(b, e);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes bᵉ for e ∊ ℕ₀.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -540,6 +561,7 @@ powi_or_throw(B b, E e)
 
     return detail::powi<detail::throw_error_handler>(b, e);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -591,6 +613,7 @@ try_ceili(X x, D d)
     return detail::ceili<detail::try_error_handler>(x, d);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes xᵉ for d ∊ ℕ₀.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -606,6 +629,7 @@ ceili_or_throw(X x, D d)
 
     return detail::ceili<detail::throw_error_handler>(x, d);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -725,6 +749,7 @@ try_factorize_ceili(X x, B b)
     return detail::factorize_ceili<detail::try_error_handler>(x, b);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -740,6 +765,7 @@ factorize_ceili_or_throw(X x, B b)
 
     return detail::factorize_ceili<detail::throw_error_handler>(x, b);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -791,6 +817,7 @@ try_factorize_ceili(X x, A a, B b)
     return detail::factorize_ceili<detail::try_error_handler>(x, a, b);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
@@ -806,6 +833,7 @@ factorize_ceili_or_throw(X x, A a, B b)
 
     return detail::factorize_ceili<detail::throw_error_handler>(x, a, b);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
 #if gsl_CPP17_OR_GREATER
@@ -837,6 +865,7 @@ try_gcd(A a, B b)
     return detail::gcd<detail::try_error_handler>(a, b);
 }
 
+# if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes the greatest common divisor of a and b.
     // Throws `std::system_error` upon overflow.
@@ -850,6 +879,7 @@ gcd_or_throw(A a, B b)
 
     return detail::gcd<detail::throw_error_handler>(a, b);
 }
+# endif gsl_HAVE_EXCEPTIONS
 
 
     //ᅟ
@@ -880,6 +910,7 @@ try_lcm(A a, B b)
     return detail::lcm<detail::try_error_handler>(a, b);
 }
 
+# if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Computes the least common multiple of a and b.
     // Throws `std::system_error` upon overflow.
@@ -893,6 +924,7 @@ lcm_or_throw(A a, B b)
 
     return detail::lcm<detail::throw_error_handler>(a, b);
 }
+# endif // gsl_HAVE_EXCEPTIONS
 #endif // gsl_CPP17_OR_GREATER
 
 
@@ -922,6 +954,7 @@ try_integral_cast(SrcT src)
     return detail::integral_cast<detail::try_error_handler, DstT>(src);
 }
 
+#if gsl_HAVE_EXCEPTIONS
     //ᅟ
     // Casts the given integer value to `DstT`.
     // Throws `std::system_error` if the value cannot be represented in the target type.
@@ -934,6 +967,7 @@ integral_cast_or_throw(SrcT src)
 
     return detail::integral_cast<detail::throw_error_handler, DstT>(src);
 }
+#endif // gsl_HAVE_EXCEPTIONS
 
 
 } // namespace slowmath

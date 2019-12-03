@@ -7,7 +7,7 @@
 #include <type_traits>  // for integral_constant<>
 #include <system_error> // for errc, system_error, error_code
 
-#include <gsl/gsl-lite.hpp> // for Expects()
+#include <gsl/gsl-lite.hpp> // for Expects(), gsl_HAVE_EXCEPTIONS
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -119,6 +119,7 @@ struct try_error_handler
     }
 };
 
+#if gsl_HAVE_EXCEPTIONS
 struct throw_error_handler
 {
     template <typename T> using result = T;
@@ -148,6 +149,7 @@ struct throw_error_handler
         std::terminate();
     }
 };
+#endif // gsl_HAVE_EXCEPTIONS
 
 
 } // namespace detail
