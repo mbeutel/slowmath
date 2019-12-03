@@ -14,31 +14,6 @@ find_package(gsl-lite 0.35.3 REQUIRED)
 # common settings target
 add_library(test-slowmath-settings INTERFACE)
 
-# precompiled headers
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    target_precompile_headers(test-slowmath-settings
-        INTERFACE
-            # C standard library
-            <climits>
-            <cstddef>
-            <cstdint>
-            # C++ standard library
-            <array>
-            <tuple>
-            <limits>
-            <sstream>
-            <utility>
-            <numeric>
-            <iterator>
-            <algorithm>
-            <exception>
-            <type_traits>
-            <system_error>
-            # other libraries
-            <gsl/gsl-lite.hpp>
-            <catch2/catch.hpp>)
-endif()
-
 # test runner target
 add_library(test-slowmath-runner OBJECT
     "main.cpp")
@@ -55,6 +30,30 @@ add_executable(test-slowmath-cxx14
     "test-round.cpp")
 add_executable(test-slowmath-cxx17
     "test-gcd-lcm.cpp")
+
+# precompiled headers
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    target_precompile_headers(test-slowmath-cxx14
+        INTERFACE
+            # C standard library
+            <climits>
+            <cstddef>
+            <cstdint>
+            # C++ standard library
+            <array>
+            <tuple>
+            <limits>
+            <sstream>
+            <utility>
+            <iterator>
+            <algorithm>
+            <exception>
+            <type_traits>
+            <system_error>
+            # other libraries
+            <gsl/gsl-lite.hpp>
+            <catch2/catch.hpp>)
+endif()
 
 # compiler settings
 include(CMakeshift/TargetCompileSettings)
