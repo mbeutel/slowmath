@@ -13,6 +13,7 @@
 
 #if defined(_MSC_VER) && !defined(__clang__)
 # pragma warning( push )
+# pragma warning( disable: 4146 ) // unary minus operator applied to unsigned type, result still unsigned
 # pragma warning( disable: 4702 ) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
@@ -39,49 +40,16 @@ constexpr V sqrti(V v)
         : a + 1;
 }
 
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> square_unsigned(V v)
-{
-    using V0 = integral_value_type<V>;
-
-    constexpr V0 m = detail::sqrti(max_v<V0>);
-
-    if (v > m) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(v*v));
-}
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> square_signed(V v)
-{
-    using V0 = integral_value_type<V>;
-
-    constexpr V0 m = detail::sqrti(max_v<V0>);
-
-    if (v < -m || v > m) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(v*v));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename V>
-constexpr int square_0(std::false_type /*isSigned*/, V v)
-{
-    return detail::square_unsigned<EH>(v);
-}
-template <typename EH, typename V>
-constexpr int square_0(std::true_type /*isSigned*/, V v)
-{
-    return detail::square_signed<EH>(v);
-}
-#endif // !gsl_CPP17_OR_GREATER
+    // Computes v².
 template <typename EH, typename V>
 constexpr int square(V v)
 {
     using V0 = integral_value_type<V>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V0>) return detail::square_signed<EH>(v);
-    else return detail::square_unsigned<EH>(v);
-#else // gsl_CPP17_OR_GREATER
-    return detail::square_0<EH>(std::is_signed<V0>{ }, v);
-#endif // gsl_CPP17_OR_GREATER
+    constexpr V0 m = detail::sqrti(max_v<V0>);
+    if (v > m || (std::is_signed<V0>::value && v < -m)) return EH::make_error(std::errc::value_too_large);
+
+    return EH::make_result(V(v*v));
 }
 
 

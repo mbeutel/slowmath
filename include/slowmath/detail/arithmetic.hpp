@@ -13,6 +13,8 @@
 
 #if defined(_MSC_VER) && !defined(__clang__)
 # pragma warning( push )
+# pragma warning( disable: 4127 ) // conditional expression is constant
+# pragma warning( disable: 4146 ) // unary minus operator applied to unsigned type, result still unsigned
 # pragma warning( disable: 4702 ) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
@@ -29,86 +31,38 @@ namespace detail
 
 
 template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> absi_unsigned(V v)
-{
-    using V0 = integral_value_type<V>;
-
-    return EH::make_result(V0(v));
-}
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> absi_signed(V v)
-{
-    using V0 = integral_value_type<V>;
-
-        // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
-    if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V0(v < 0 ? -v : v));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> absi_0(std::false_type /*isSigned*/, V v)
-{
-    return detail::absi_unsigned<EH>(v);
-}
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> absi_0(std::true_type /*isSigned*/, V v)
-{
-    return detail::absi_signed<EH>(v);
-}
-#endif // !gsl_CPP17_OR_GREATER
-template <typename EH, typename V>
 constexpr result_t<EH, integral_value_type<V>> absi(V v)
 {
     using V0 = integral_value_type<V>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V0>) return detail::absi_signed<EH>(v);
-    else return detail::absi_unsigned<EH>(v);
-#else // gsl_CPP17_OR_GREATER
-    return detail::absi_0<EH>(std::is_signed<V0>{ }, v);
-#endif // gsl_CPP17_OR_GREATER
+    if (std::is_signed<V0>::value)
+    {
+            // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
+        if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
+        return EH::make_result(V0(v < 0 ? -v : v));
+    }
+    else
+    {
+        return EH::make_result(V0(v));
+    }
 }
 
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> negate_unsigned(V v)
-{
-    using V0 = integral_value_type<V>;
 
-    if (v != 0) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V0(0));
-}
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> negate_signed(V v)
-{
-    using V0 = integral_value_type<V>;
-
-        // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
-    if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V0(-v));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> negate_0(std::false_type /*isSigned*/, V v)
-{
-    return detail::negate_unsigned<EH>(v);
-}
-template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> negate_0(std::true_type /*isSigned*/, V v)
-{
-    return detail::negate_signed<EH>(v);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename V>
 constexpr result_t<EH, integral_value_type<V>> negate(V v)
 {
     using V0 = integral_value_type<V>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V0>) return detail::negate_signed<EH>(v);
-    else return detail::negate_unsigned<EH>(v);
-#else // gsl_CPP17_OR_GREATER
-    return detail::negate_0<EH>(std::is_signed<V0>{ }, v);
-#endif // gsl_CPP17_OR_GREATER
+    if (std::is_signed<V0>::value)
+    {
+        if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
+        return EH::make_result(V0(-v));
+    }
+    else
+    {
+        if (v != 0) return EH::make_error(std::errc::value_too_large);
+        return EH::make_result(V0(0));
+    }
 }
 
 
@@ -337,92 +291,26 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply(A a, B b)
 
 
 template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> divide_unsigned(N n, D d)
-{
-    using V = common_integral_value_type<N, D>;
-
-    Expects(d != 0);
-
-    return EH::make_result(V(n / d));
-}
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> divide_signed(N n, D d)
-{
-    using V = common_integral_value_type<N, D>;
-
-    Expects(d != 0);
-
-    if (n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(n / d));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> divide_0(std::false_type /*isSigned*/, N n, D d)
-{
-    return detail::divide_unsigned<EH>(n, d);
-}
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> divide_0(std::true_type /*isSigned*/, N n, D d)
-{
-    return detail::divide_signed<EH>(n, d);
-}
-#endif // !gsl_CPP17_OR_GREATER
-template <typename EH, typename N, typename D>
 constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V>) return detail::divide_signed<EH>(n, d);
-    else return detail::divide_unsigned<EH>(n, d);
-#else // gsl_CPP17_OR_GREATER
-    return detail::divide_0<EH>(std::is_signed<V>{ }, n, d);
-#endif // gsl_CPP17_OR_GREATER
-}
-
-
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> modulo_unsigned(N n, D d)
-{
-    using V = common_integral_value_type<N, D>;
-
     Expects(d != 0);
 
-    return EH::make_result(V(n % d));
+    if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
+    return EH::make_result(V(n / d));
 }
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> modulo_signed(N n, D d)
-{
-    using V = common_integral_value_type<N, D>;
 
-    Expects(d != 0);
 
-    if (n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(n % d));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> modulo_0(std::false_type /*isSigned*/, N n, D d)
-{
-    return detail::modulo_unsigned<EH>(n, d);
-}
-template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> modulo_0(std::true_type /*isSigned*/, N n, D d)
-{
-    return detail::modulo_signed<EH>(n, d);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename N, typename D>
 constexpr result_t<EH, common_integral_value_type<N, D>> modulo(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V>) return detail::modulo_signed<EH>(n, d);
-    else return detail::modulo_unsigned<EH>(n, d);
-#else // gsl_CPP17_OR_GREATER
-    return detail::modulo_0<EH>(std::is_signed<V>{ }, n, d);
-#endif // gsl_CPP17_OR_GREATER
+    Expects(d != 0);
+
+    if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
+    return EH::make_result(V(n % d));
 }
 
 
