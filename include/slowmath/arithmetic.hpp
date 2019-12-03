@@ -17,6 +17,7 @@
 #include <slowmath/detail/pow-log.hpp>        // for square(), powi(), log_floori(), log_ceili()
 #include <slowmath/detail/round.hpp>          // for floori(), ceili(), ratio_floori(), ratio_ceili()
 #include <slowmath/detail/factorize.hpp>      // for factorize_floori(), factorize_ceili()
+#include <slowmath/detail/cast.hpp>           // for integral_cast<>()
 
 
 namespace slowmath
@@ -831,6 +832,46 @@ lcm_or_throw(A a, B b)
     return detail::lcm<detail::throw_error_handler>(a, b);
 }
 #endif // gsl_CPP17_OR_GREATER
+
+
+    //ᅟ
+    // Casts the given integer value to `DstT`.
+    // Uses `Expects()` to raise error if the value cannot be represented in the target type.
+    //
+template <typename DstT, typename SrcT>
+gsl_NODISCARD constexpr DstT
+integral_cast(SrcT src)
+{
+    static_assert(detail::are_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be convertible to an integral type");
+
+    return detail::integral_cast<detail::assert_error_handler, DstT>(src);
+}
+
+    //ᅟ
+    // Casts the given integer value to `DstT`.
+    // Returns error code `std::errc::value_too_large` if the value cannot be represented in the target type.
+    //
+template <typename DstT, typename SrcT>
+gsl_NODISCARD constexpr arithmetic_result<DstT>
+try_integral_cast(SrcT src)
+{
+    static_assert(detail::are_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be convertible to an integral type");
+
+    return detail::integral_cast<detail::try_error_handler, DstT>(src);
+}
+
+    //ᅟ
+    // Casts the given integer value to `DstT`.
+    // Throws `std::system_error` if the value cannot be represented in the target type.
+    //
+template <typename DstT, typename SrcT>
+gsl_NODISCARD constexpr DstT
+integral_cast_or_throw(SrcT src)
+{
+    static_assert(detail::are_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be convertible to an integral type");
+
+    return detail::integral_cast<detail::throw_error_handler, DstT>(src);
+}
 
 
 } // namespace slowmath

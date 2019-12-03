@@ -303,3 +303,60 @@ TEST_CASE("arithmetic")
         CHECK(slowmath::ceili(4u, 3u) == 6u);
     }
 }
+
+
+TEST_CASE("integral_cast<>()")
+{
+    SECTION("pass")
+    {
+        volatile uint8_t lu8;
+        volatile uint16_t lu16;
+        volatile int8_t li8;
+        volatile int16_t li16;
+
+            // uint <-> uint
+        CHECK_NOTHROW((lu16 = slowmath::integral_cast<uint16_t>( uint8_t( u8)))); REQUIRE(lu16 == u8);
+        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>( uint8_t( u8)))); REQUIRE( lu8 == u8);
+        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>(uint16_t( u8)))); REQUIRE( lu8 == u8);
+
+            // int <-> int
+        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>(  int8_t(i8n)))); REQUIRE(li16 == i8n);
+        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>(  int8_t(i8p)))); REQUIRE(li16 == i8p);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(  int8_t(i8n)))); REQUIRE( li8 == i8n);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(  int8_t(i8p)))); REQUIRE( li8 == i8p);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i8n)))); REQUIRE( li8 == i8n);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i8p)))); REQUIRE( li8 == i8p);
+
+            // uint <-> int
+        CHECK_NOTHROW((lu16 = slowmath::integral_cast<uint16_t>(  int8_t(i8p)))); REQUIRE(lu16 == i8p);
+        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>( uint8_t(i8p)))); REQUIRE(li16 == i8p);
+        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>(  int8_t(i8p)))); REQUIRE( lu8 == i8p);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( uint8_t(i8p)))); REQUIRE( li8 == i8p);
+        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>( int16_t(i8p)))); REQUIRE( lu8 == i8p);
+        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(uint16_t(i8p)))); REQUIRE( li8 == i8p);
+    }
+
+    SECTION("fail")
+    {
+        volatile uint8_t lu8;
+        volatile uint16_t lu16;
+        volatile int8_t li8;
+
+            // uint <-> uint
+        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast_or_throw< uint8_t>(uint16_t(u16))), std::system_error);
+
+            // int <-> int
+        CHECK_THROWS_AS(( li8 = slowmath::integral_cast_or_throw<  int8_t>( int16_t(i16n))), std::system_error);
+        CHECK_THROWS_AS(( li8 = slowmath::integral_cast_or_throw<  int8_t>( int16_t(i16p))), std::system_error);
+
+            // uint <-> int
+        CHECK_THROWS_AS((lu16 = slowmath::integral_cast_or_throw<uint16_t>(  int8_t( i8n))), std::system_error);
+        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast_or_throw< uint8_t>(  int8_t( i8n))), std::system_error);
+        CHECK_THROWS_AS(( li8 = slowmath::integral_cast_or_throw<  int8_t>( uint8_t( u8 ))), std::system_error);
+        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast_or_throw< uint8_t>( int16_t( i8n))), std::system_error);
+        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast_or_throw< uint8_t>( int16_t(i16n))), std::system_error);
+        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast_or_throw< uint8_t>( int16_t(i16p))), std::system_error);
+        CHECK_THROWS_AS(( li8 = slowmath::integral_cast_or_throw<  int8_t>(uint16_t( u8 ))), std::system_error);
+        CHECK_THROWS_AS(( li8 = slowmath::integral_cast_or_throw<  int8_t>(uint16_t(u16 ))), std::system_error);
+    }
+}
