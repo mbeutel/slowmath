@@ -6,7 +6,7 @@
 #include <array>
 #include <system_error> // for errc
 
-#include <gsl/gsl-lite.hpp> // for gsl_CPP17_OR_GREATER, gsl_NODISCARD, gsl_constexpr20
+#include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER, gsl_NODISCARD, gsl_constexpr20
 
 #include <slowmath/detail/type_traits.hpp>    // for are_integral_arithmetic_types_v<>, have_same_signedness_v<>
 #include <slowmath/detail/error-handling.hpp> // for assert_error_handler, try_error_handler, throw_error_handler
@@ -271,6 +271,8 @@ divide(N n, D d)
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
 
+    Expects(d != 0);
+
     return detail::divide<detail::assert_error_handler>(n, d);
 }
 
@@ -285,6 +287,8 @@ try_divide(N n, D d)
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
 
+    Expects(d != 0);
+
     return detail::divide<detail::try_error_handler>(n, d);
 }
 
@@ -298,6 +302,8 @@ divide_or_throw(N n, D d)
 {
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
+
+    Expects(d != 0);
 
     return detail::divide<detail::throw_error_handler>(n, d);
 }
@@ -314,6 +320,8 @@ modulo(N n, D d)
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
 
+    Expects(d != 0);
+
     return detail::modulo<detail::assert_error_handler>(n, d);
 }
 
@@ -328,6 +336,8 @@ try_modulo(N n, D d)
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
 
+    Expects(d != 0);
+
     return detail::modulo<detail::try_error_handler>(n, d);
 }
 
@@ -341,6 +351,8 @@ modulo_or_throw(N n, D d)
 {
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
+
+    Expects(d != 0);
 
     return detail::modulo<detail::throw_error_handler>(n, d);
 }
@@ -397,6 +409,8 @@ shift_left(X x, S s)
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && s >= 0);
+
     return detail::shift_left<detail::assert_error_handler>(x, s);
 }
 
@@ -411,6 +425,8 @@ try_shift_left(X x, S s)
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && s >= 0);
+
     return detail::shift_left<detail::try_error_handler>(x, s);
 }
 
@@ -424,6 +440,8 @@ shift_left_or_throw(X x, S s)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
+
+    Expects(x >= 0 && s >= 0);
 
     return detail::shift_left<detail::throw_error_handler>(x, s);
 }
@@ -440,6 +458,8 @@ shift_right(X x, S s)
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && s >= 0);
+
     return detail::shift_right<detail::assert_error_handler>(x, s);
 }
 
@@ -453,6 +473,8 @@ try_shift_right(X x, S s)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
+
+    Expects(x >= 0 && s >= 0);
 
     return detail::shift_right<detail::try_error_handler>(x, s);
 }
@@ -468,6 +490,8 @@ shift_right_or_throw(X x, S s)
     static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && s >= 0);
+
     return detail::shift_right<detail::throw_error_handler>(x, s);
 }
 
@@ -482,6 +506,8 @@ powi(B b, E e)
 {
     static_assert(detail::are_integral_arithmetic_types_v<B, E>, "arguments must be convertible to an integral type");
 
+    Expects(e >= 0);
+
     return detail::powi<detail::assert_error_handler>(b, e);
 }
 
@@ -495,6 +521,8 @@ try_powi(B b, E e)
 {
     static_assert(detail::are_integral_arithmetic_types_v<B, E>, "arguments must be convertible to an integral type");
 
+    Expects(e >= 0);
+
     return detail::powi<detail::try_error_handler>(b, e);
 }
 
@@ -507,6 +535,8 @@ gsl_NODISCARD constexpr detail::integral_value_type<B>
 powi_or_throw(B b, E e)
 {
     static_assert(detail::are_integral_arithmetic_types_v<B, E>, "arguments must be convertible to an integral type");
+
+    Expects(e >= 0);
 
     return detail::powi<detail::throw_error_handler>(b, e);
 }
@@ -523,6 +553,8 @@ floori(X x, D d)
     static_assert(detail::are_integral_arithmetic_types_v<X, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && d > 0);
+
     return detail::floori(x, d);
 }
 
@@ -538,6 +570,8 @@ ceili(X x, D d)
     static_assert(detail::are_integral_arithmetic_types_v<X, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && d > 0);
+
     return detail::ceili<detail::assert_error_handler>(x, d);
 }
 
@@ -552,6 +586,8 @@ try_ceili(X x, D d)
     static_assert(detail::are_integral_arithmetic_types_v<X, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
 
+    Expects(x >= 0 && d > 0);
+
     return detail::ceili<detail::try_error_handler>(x, d);
 }
 
@@ -565,6 +601,8 @@ ceili_or_throw(X x, D d)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
+
+    Expects(x >= 0 && d > 0);
 
     return detail::ceili<detail::throw_error_handler>(x, d);
 }
@@ -581,6 +619,8 @@ ratio_floori(N n, D d)
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
 
+    Expects(n >= 0 && d > 0);
+
     return detail::ratio_floori(n, d);
 }
 
@@ -595,6 +635,8 @@ ratio_ceili(N n, D d)
 {
     static_assert(detail::are_integral_arithmetic_types_v<N, D>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
+
+    Expects(n >= 0 && d > 0);
 
     return detail::ratio_ceili(n, d);
 }
@@ -611,6 +653,8 @@ log_floori(X x, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && b > 1);
+
     return detail::log_floori(x, b);
 }
 
@@ -625,6 +669,8 @@ log_ceili(X x, B b)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
+
+    Expects(x > 0 && b > 1);
 
     return detail::log_ceili(x, b);
 }
@@ -641,6 +687,8 @@ factorize_floori(X x, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && b > 1);
+
     return detail::factorize_floori(x, b);
 }
 
@@ -656,6 +704,8 @@ factorize_ceili(X x, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && b > 1);
+
     return detail::factorize_ceili<detail::assert_error_handler>(x, b);
 }
 
@@ -670,6 +720,8 @@ try_factorize_ceili(X x, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && b > 1);
+
     return detail::factorize_ceili<detail::try_error_handler>(x, b);
 }
 
@@ -683,6 +735,8 @@ factorize_ceili_or_throw(X x, B b)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
+
+    Expects(x > 0 && b > 1);
 
     return detail::factorize_ceili<detail::throw_error_handler>(x, b);
 }
@@ -699,6 +753,8 @@ factorize_floori(X x, A a, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, A, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, A, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && a > 1 && b > 1 && a != b);
+
     return detail::factorize_floori(x, a, b);
 }
 
@@ -714,6 +770,8 @@ factorize_ceili(X x, A a, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, A, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, A, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && a > 1 && b > 1 && a != b);
+
     return detail::factorize_ceili<detail::assert_error_handler>(x, a, b);
 }
 
@@ -728,6 +786,8 @@ try_factorize_ceili(X x, A a, B b)
     static_assert(detail::are_integral_arithmetic_types_v<X, A, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, A, B>, "argument types must have identical signedness");
 
+    Expects(x > 0 && a > 1 && b > 1 && a != b);
+
     return detail::factorize_ceili<detail::try_error_handler>(x, a, b);
 }
 
@@ -741,6 +801,8 @@ factorize_ceili_or_throw(X x, A a, B b)
 {
     static_assert(detail::are_integral_arithmetic_types_v<X, A, B>, "arguments must be convertible to an integral type");
     static_assert(detail::have_same_signedness_v<X, A, B>, "argument types must have identical signedness");
+
+    Expects(x > 0 && a > 1 && b > 1 && a != b);
 
     return detail::factorize_ceili<detail::throw_error_handler>(x, a, b);
 }

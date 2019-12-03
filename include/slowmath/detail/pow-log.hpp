@@ -147,9 +147,6 @@ constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
 {
     using V = integral_value_type<B>;
 
-        // Negative powers are not integral.
-    Expects(e >= 0);
-
 #if gsl_CPP17_OR_GREATER
     if constexpr (std::is_signed_v<V>) return detail::powi_signed<EH>(b, e);
     else return detail::powi_unsigned<EH>(b, e);
@@ -164,8 +161,6 @@ template <typename X, typename B>
 constexpr common_integral_value_type<X, B> log_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
-
-    Expects(x > 0 && b > 1);
 
     V e = 0;
     V x0 = 1;
@@ -197,8 +192,6 @@ template <typename X, typename B>
 constexpr common_integral_value_type<X, B> log_ceili(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
-
-    Expects(x > 0 && b > 1);
 
     V e = 0;
     V x0 = 1;

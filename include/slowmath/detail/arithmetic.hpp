@@ -6,8 +6,6 @@
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
 #include <system_error> // for errc
 
-#include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER
-
 #include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
 
 
@@ -192,8 +190,6 @@ constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    Expects(d != 0);
-
     if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
     return EH::make_result(V(n / d));
 }
@@ -203,8 +199,6 @@ template <typename EH, typename N, typename D>
 constexpr result_t<EH, common_integral_value_type<N, D>> modulo(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
-
-    Expects(d != 0);
 
     if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
     return EH::make_result(V(n % d));

@@ -3,10 +3,9 @@
 #define INCLUDED_SLOWMATH_DETAIL_FACTORIZE_HPP_
 
 
-#include <gsl/gsl-lite.hpp> // for Expects()
-
-#include <slowmath/detail/arithmetic.hpp>  // for can_multiply(), multiply<>()
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/arithmetic.hpp>     // for multiply<>()
+#include <slowmath/detail/error-handling.hpp> // for try_error_handler
+#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -32,8 +31,6 @@ template <typename X, typename B>
 constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
-
-    Expects(x > 0 && b > 1);
 
     V e = 0;
     V x0 = 1;
@@ -82,8 +79,6 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, B>, 1>> facto
 {
     using V = common_integral_value_type<X, B>;
 
-    Expects(x > 0 && b > 1);
-
     auto floorFac = detail::factorize_floori(x, b);
     if (floorFac.remainder == 0)
     {
@@ -105,8 +100,6 @@ template <typename X, typename A, typename B>
 constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
-
-    Expects(x > 0 && a > 1 && b > 1 && a != b);
 
         // adaption of algorithm in factorize_ceili() for different optimization criterion
 
@@ -155,8 +148,6 @@ template <typename EH, typename X, typename A, typename B>
 constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, 2>> factorize_ceili(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
-
-    Expects(x > 0 && a > 1 && b > 1 && a != b);
 
         // algorithm discussed in http://stackoverflow.com/a/39050139 and slightly altered to avoid unnecessary overflows
 

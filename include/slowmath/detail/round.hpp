@@ -5,8 +5,6 @@
 
 #include <system_error> // for errc
 
-#include <gsl/gsl-lite.hpp> // for Expects()
-
 #include <slowmath/detail/type_traits.hpp> // for max_v<>, common_integral_value_type<>, result_t<>
 
 
@@ -27,8 +25,6 @@ namespace detail
 template <typename X, typename D>
 constexpr common_integral_value_type<X, D> floori(X x, D d)
 {
-    Expects(x >= 0 && d > 0);
-
     return x - x % d;
 }
 
@@ -38,8 +34,6 @@ template <typename EH, typename X, typename D>
 constexpr result_t<EH, common_integral_value_type<X, D>> ceili(X x, D d)
 {
     using V = common_integral_value_type<X, D>;
-
-    Expects(x >= 0 && d > 0);
 
         // We have the following identities:
         //
@@ -61,8 +55,6 @@ constexpr result_t<EH, common_integral_value_type<X, D>> ceili(X x, D d)
 template <typename N, typename D>
 constexpr common_integral_value_type<N, D> ratio_floori(N n, D d)
 {
-    Expects(n >= 0 && d > 0);
-        
     return n / d;
 }
 
@@ -71,8 +63,6 @@ constexpr common_integral_value_type<N, D> ratio_floori(N n, D d)
 template <typename N, typename D>
 constexpr common_integral_value_type<N, D> ratio_ceili(N n, D d)
 {
-    Expects(n >= 0 && d > 0);
-        
     return n != 0
         ? (n - 1) / d + 1 // overflow-safe
         : 0;
