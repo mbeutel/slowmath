@@ -41,15 +41,15 @@ const volatile int8_t zi8 = 0;
 const volatile int64_t zi64 = 0;
 
 const volatile size_t smax = std::numeric_limits<size_t>::max();
-const volatile size_t smaxlog = slowmath::log_floori(smax, size_t(2));
+const volatile size_t smaxlog = slowmath::log_floori<size_t>(smax, size_t(2));
 const volatile int imin = std::numeric_limits<int>::min(),
                    imax = std::numeric_limits<int>::max();
-const volatile int imaxlog = slowmath::log_floori(imax, 2);
-const volatile int iminlog = slowmath::log_floori(imin / -2, 2) + 1;
+const volatile int imaxlog = slowmath::log_floori<int>(imax, 2);
+const volatile int iminlog = slowmath::log_floori<int>(imin / -2, 2) + 1;
 const volatile int64_t lmin = std::numeric_limits<int64_t>::min(),
                          lmax = std::numeric_limits<int64_t>::max();
-const volatile int64_t lmaxlog = slowmath::log_floori(lmax, int64_t(2));
-const volatile int64_t lminlog = slowmath::log_floori(lmin / -2, int64_t(2)) + 1;
+const volatile int64_t lmaxlog = slowmath::log_floori<int64_t>(lmax, int64_t(2));
+const volatile int64_t lminlog = slowmath::log_floori<int64_t>(lmin / -2, int64_t(2)) + 1;
 
 
 TEST_CASE("arithmetic")

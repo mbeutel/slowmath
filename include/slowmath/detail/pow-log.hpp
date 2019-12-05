@@ -157,12 +157,12 @@ constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
 
 
     // Computes ⌊log x ÷ log b⌋ for x,b ∊ ℕ, x > 0, b > 1.
-template <typename X, typename B>
-constexpr common_integral_value_type<X, B> log_floori(X x, B b)
+template <typename E, typename X, typename B>
+constexpr E log_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
-    V e = 0;
+    E e = 0;
     V x0 = 1;
     constexpr V M = max_v<V>;
     V m = M / b;
@@ -188,7 +188,7 @@ constexpr common_integral_value_type<X, B> log_floori(X x, B b)
 
 
     // Computes ⌈log x ÷ log b⌉ for x,b ∊ ℕ, x > 0, b > 1.
-template <typename X, typename B>
+template <typename E, typename X, typename B>
 constexpr common_integral_value_type<X, B> log_ceili(X x, B b)
 {
     using V = common_integral_value_type<X, B>;

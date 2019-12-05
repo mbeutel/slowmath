@@ -18,7 +18,7 @@ namespace slowmath
 {
 
 
-template <typename V, int NumFactors>
+template <typename V, typename E, int NumFactors>
 struct factorization;
 
 
@@ -26,13 +26,13 @@ namespace detail
 {
 
 
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ + r with r ≥ 0 minimal.
-template <typename X, typename B>
-constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X x, B b)
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ + r with r ≥ 0 minimal.
+template <typename E, typename X, typename B>
+constexpr factorization<common_integral_value_type<X, B>, E, 1> factorize_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
-    V e = 0;
+    E e = 0;
     V x0 = 1;
     constexpr V M = max_v<V>;
     V m = M / b;
@@ -58,13 +58,13 @@ constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X 
             // Compare with m before computing bᵉ⁺¹ to avoid overflow.
         if (x0 > m)
         {
-            return { x - x0, { e } };
+            return { x - x0, e };
         }
 
         V x1 = x0 * b; // = bᵉ⁺¹
         if (x1 > x)
         {
-            return { x - x0, { e } };
+            return { x - x0, e };
         }
 
         x0 = x1;
@@ -73,16 +73,16 @@ constexpr factorization<common_integral_value_type<X, B>, 1> factorize_floori(X 
 }
 
 
-    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, { e }) such that x = bᵉ - r with r ≥ 0 minimal.
-template <typename EH, typename X, typename B>
-constexpr result_t<EH, factorization<common_integral_value_type<X, B>, 1>> factorize_ceili(X x, B b)
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
+template <typename EH, typename E, typename X, typename B>
+constexpr result_t<EH, factorization<common_integral_value_type<X, B>, E, 1>> factorize_ceili(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
-    auto floorFac = detail::factorize_floori(x, b);
+    auto floorFac = detail::factorize_floori<E>(x, b);
     if (floorFac.remainder == 0)
     {
-        return EH::make_result(factorization<V, 1>{ 0, floorFac.factorExponents });
+        return EH::make_result(floorFac);
     }
 
     auto xFloor = x - floorFac.remainder; // = bᵉ
@@ -91,23 +91,23 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, B>, 1>> facto
     auto prod = EH::get_value(prodResult);
 
     auto rCeil = prod - floorFac.remainder; // x = bᵉ + r =: bᵉ⁺¹ - r' ⇒ r' = bᵉ(b - 1) - r
-    return EH::make_result(factorization<V, 1>{ rCeil, { floorFac.factorExponents[0] + 1 } }); // e cannot overflow
+    return EH::make_result(factorization<V, E, 1>{ rCeil, floorFac.exponent1 + 1 }); // e cannot overflow
 }
 
 
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
-template <typename X, typename A, typename B>
-constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori(X x, A a, B b)
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
+template <typename E, typename X, typename A, typename B>
+constexpr factorization<common_integral_value_type<X, A, B>, E, 2> factorize_floori(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
 
         // adaption of algorithm in factorize_ceili() for different optimization criterion
 
-    auto facA = detail::factorize_floori(x, a);
+    auto facA = detail::factorize_floori<E>(x, a);
         
-    V i = facA.factorExponents[0],
+    E i = facA.exponent1,
       j = 0;
-    V ci = i,
+    E ci = i,
       cj = j;
     V y = x - facA.remainder; // = aⁱ
     V cy = y; // cy ≤ x at all times
@@ -116,7 +116,7 @@ constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori
     {
         if (i == 0)
         {
-            return { x - cy, { ci, cj } };
+            return { x - cy, ci, cj };
         }
 
             // take factor a
@@ -143,24 +143,24 @@ constexpr factorization<common_integral_value_type<X, A, B>, 2> factorize_floori
 }
 
 
-    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, { i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
-template <typename EH, typename X, typename A, typename B>
-constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, 2>> factorize_ceili(X x, A a, B b)
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+template <typename EH, typename E, typename X, typename A, typename B>
+constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, E, 2>> factorize_ceili(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
 
         // algorithm discussed in http://stackoverflow.com/a/39050139 and slightly altered to avoid unnecessary overflows
 
-    auto facAResult = detail::factorize_ceili<EH>(x, a);
+    auto facAResult = detail::factorize_ceili<EH, E>(x, a);
     if (EH::is_error(facAResult)) return EH::passthrough_error(facAResult);
     auto facA = EH::get_value(facAResult);
 
     if (x > max_v<V> - facA.remainder) return EH::make_error(std::errc::value_too_large);
     V y0 = x + facA.remainder;
 
-    V i = facA.factorExponents[0],
+    E i = facA.exponent1,
       j = 0;
-    V ci = i,
+    E ci = i,
       cj = j;
     V y = y0;
     V cy = y; // cy ≥ x at all times
@@ -169,7 +169,7 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, 2>> fa
     {
         if (i == 0)
         {
-            return EH::make_result(factorization<V, 2>{ cy - x, { ci, cj } });
+            return EH::make_result(factorization<V, E, 2>{ cy - x, ci, cj });
         }
 
             // take factor a

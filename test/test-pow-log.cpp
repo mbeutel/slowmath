@@ -70,7 +70,7 @@ TEMPLATE_TEST_CASE("log_floori(), log_ceili()", "[arithmetic]", int)
 
     SECTION("basic correctness")
     {
-        using Tuple = std::tuple<TestType, TestType, TestType, TestType>;
+        using Tuple = std::tuple<TestType, TestType, int, int>;
         auto x_b_logFloor_logCeil = GENERATE(
             Tuple{ 1,        2,        0,                                         0                                         },
             Tuple{ 2,        2,        1,                                         1                                         },
@@ -83,14 +83,15 @@ TEMPLATE_TEST_CASE("log_floori(), log_ceili()", "[arithmetic]", int)
             Tuple{ 1,        iMax,     0,                                         0                                         },
             Tuple{ 2,        iMax,     0,                                         1                                         }
         );
-        TestType x, b, logFloor, logCeil;
+        TestType x, b;
+        int logFloor, logCeil;
         std::tie(x, b, logFloor, logCeil) = x_b_logFloor_logCeil;
         
         CAPTURE(x);
         CAPTURE(b);
 
-        CHECK(slowmath::log_floori(x, b) == logFloor);
-        CHECK(slowmath::log_ceili(x, b) == logCeil);
+        CHECK(slowmath::log_floori<int>(x, b) == logFloor);
+        CHECK(slowmath::log_ceili<int>(x, b) == logCeil);
     }
 }
 
