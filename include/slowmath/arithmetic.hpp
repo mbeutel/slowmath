@@ -440,10 +440,9 @@ square_or_throw(V v)
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr detail::common_integral_value_type<X, S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
 shift_left(X x, S s)
 {
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);
@@ -456,10 +455,9 @@ shift_left(X x, S s)
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr arithmetic_result<detail::common_integral_value_type<X, S>>
+gsl_NODISCARD constexpr arithmetic_result<detail::integral_value_type<X>>
 try_shift_left(X x, S s)
 {
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);
@@ -473,10 +471,9 @@ try_shift_left(X x, S s)
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr detail::common_integral_value_type<X, S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
 shift_left_or_throw(X x, S s)
 {
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);
@@ -491,10 +488,9 @@ shift_left_or_throw(X x, S s)
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr detail::common_integral_value_type<X, S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
 shift_right(X x, S s)
 {
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);
@@ -507,11 +503,10 @@ shift_right(X x, S s)
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr arithmetic_result<detail::common_integral_value_type<X, S>>
+gsl_NODISCARD constexpr arithmetic_result<detail::integral_value_type<X>>
 try_shift_right(X x, S s)
 {
-    static_assert(detail::are_integral_arithmetic_types_v<X, S>, "arguments must be convertible to an integral type");
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);
 
@@ -524,10 +519,9 @@ try_shift_right(X x, S s)
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename S>
-gsl_NODISCARD constexpr detail::common_integral_value_type<X, S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
 shift_right_or_throw(X x, S s)
 {
-    static_assert(detail::have_same_signedness_v<X, S>, "argument types must have identical signedness");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
     Expects(x >= 0 && s >= 0);

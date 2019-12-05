@@ -28,7 +28,7 @@ constexpr result_t<EH, integral_value_type<X>> shift_right(X x, S s)
     using V0 = integral_value_type<X>;
 
     if (s >= gsl::narrow_cast<integral_value_type<S>>(sizeof(X) * CHAR_BIT)) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V0(x >> s));
+    return EH::make_result(V0(x >> V0(s)));
 }
 
 
@@ -38,7 +38,7 @@ constexpr result_t<EH, integral_value_type<X>> shift_left(X x, S s)
     using V0 = integral_value_type<X>;
 
     if (s >= gsl::narrow_cast<integral_value_type<S>>(sizeof(V0) * CHAR_BIT) || x > (max_v<V0> >> s)) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V0(x << s));
+    return EH::make_result(V0(x << V0(s)));
 }
 
 
