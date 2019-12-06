@@ -3,9 +3,8 @@
 #define INCLUDED_SLOWMATH_DETAIL_CAST_HPP_
 
 
-#include <system_error> // for errc
-
-#include <slowmath/detail/type_traits.hpp> // for have_same_signedness<>, integral_value_type<>
+#include <slowmath/detail/type_traits.hpp>    // for have_same_signedness<>, integral_value_type<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -28,11 +27,9 @@ constexpr result_t<EH, DstT> integral_cast(SrcT src)
     using SrcV = integral_value_type<SrcT>;
 
     auto dst = static_cast<DstT>(src);
-    if (static_cast<SrcV>(dst) != src
-        || (!have_same_signedness_v<DstT, SrcV> && ((dst < 0) != (src < 0))))
-    {
-        return EH::make_error(std::errc::value_too_large);
-    }
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(
+        static_cast<SrcV>(dst) == src
+     && (have_same_signedness_v<DstT, SrcV> || ((dst < 0) == (src < 0))));
     return EH::make_result(dst);
 }
 

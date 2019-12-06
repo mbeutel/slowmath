@@ -62,15 +62,20 @@ struct errc_wildcard_t
 struct assert_error_handler
 {
     template <typename T> using result = T;
-    
+
     template <typename T>
     static constexpr SLOWMATH_DETAIL_FORCEINLINE T make_result(T value) noexcept
     {
         return value;
     }
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE std::true_type check(bool condition)
+    {
+        Expects(condition);
+        return { };
+    }
     static inline unreachable_wildcard_t make_error(std::errc)
     {
-        Expects(false);
+        std::terminate();
     }
     template <typename T>
     static constexpr SLOWMATH_DETAIL_FORCEINLINE T get_value(T result) noexcept
@@ -92,11 +97,15 @@ struct assert_error_handler
 struct try_error_handler
 {
     template <typename T> using result = arithmetic_result<T>;
-    
+
     template <typename T>
     static constexpr SLOWMATH_DETAIL_FORCEINLINE arithmetic_result<T> make_result(T value) noexcept
     {
         return { value, std::errc{ } };
+    }
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE bool check(bool condition) noexcept
+    {
+        return condition;
     }
     static constexpr errc_wildcard_t make_error(std::errc ec) noexcept
     {
@@ -123,11 +132,15 @@ struct try_error_handler
 struct throw_error_handler
 {
     template <typename T> using result = T;
-    
+
     template <typename T>
     static constexpr SLOWMATH_DETAIL_FORCEINLINE T make_result(T value) noexcept
     {
         return value;
+    }
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE bool check(bool condition) noexcept
+    {
+        return condition;
     }
     [[noreturn]] static inline unreachable_wildcard_t make_error(std::errc ec)
     {
@@ -150,6 +163,10 @@ struct throw_error_handler
     }
 };
 #endif // gsl_HAVE_EXCEPTIONS
+
+
+    // This macro is nasty but makes the code much more readable.
+#define SLOWMATH_DETAIL_OVERFLOW_CHECK(...) if (!EH::check(__VA_ARGS__)) return EH::make_error(std::errc::value_too_large)
 
 
 } // namespace detail

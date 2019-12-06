@@ -5,11 +5,11 @@
 
 #include <numeric>      // for gcd(), lcm()
 #include <type_traits>  // for is_signed<>
-#include <system_error> // for errc
 
 #include <gsl/gsl-lite.hpp> // for gsl_CPP17_OR_GREATER
 
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/type_traits.hpp>    // for min_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -34,8 +34,8 @@ constexpr result_t<EH, common_integral_value_type<A, B>> gcd(A a, B b)
 
     if constexpr (std::is_signed_v<V>)
     {
-            // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
-        if (a == min_v<V> || b == min_v<V>) return EH::make_error(std::errc::value_too_large);
+            // This assumes a two's complement representation.
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(a != min_v<V> && b != min_v<V>);
     }
     return EH::make_result(V(std::gcd(integral_value_type<A>(a), integral_value_type<B>(b))));
 }
@@ -51,8 +51,8 @@ constexpr result_t<EH, common_integral_value_type<A, B>> lcm(A a, B b)
 
     if constexpr (std::is_signed_v<V>)
     {
-            // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
-        if (a == min_v<V> || b == min_v<V>) return EH::make_error(std::errc::value_too_large);
+            // This assumes a two's complement representation.
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(a != min_v<V> && b != min_v<V>);
 
         V av = a < 0 ? -a : a;
         V bv = b < 0 ? -b : b;

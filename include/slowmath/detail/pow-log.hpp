@@ -4,11 +4,11 @@
 
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
-#include <system_error> // for errc
 
 #include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER
 
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -47,8 +47,7 @@ constexpr int square(V v)
     using V0 = integral_value_type<V>;
 
     constexpr V0 m = detail::sqrti(max_v<V0>);
-    if (v > m || (std::is_signed<V0>::value && v < -m)) return EH::make_error(std::errc::value_too_large);
-
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(v <= m && (!std::is_signed<V0>::value || v >= -m));
     return EH::make_result(V(v*v));
 }
 
@@ -78,11 +77,11 @@ constexpr result_t<EH, integral_value_type<B>> powi_0(B b, E e)
     V cb = 1;
     for (E0 bit = E0(1) << E0(detail::bit_scan_reverse(e)); bit > 0; bit >>= 1)
     {
-        if (cb > mSq) return EH::make_error(std::errc::value_too_large);
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(cb <= mSq);
         cb *= cb;
         if ((e & bit) != 0)
         {
-            if (cb > mb) return EH::make_error(std::errc::value_too_large);
+            SLOWMATH_DETAIL_OVERFLOW_CHECK(cb <= mb);
             cb *= b;
         }
     }
@@ -104,7 +103,7 @@ constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
         bool negate = e % 2 != 0;
 
             // Check for overflow (note the slight differente for positive vs. negative results).
-        if (uresult > U(min_v<V>) || (uresult == U(min_v<V>) && !negate)) return EH::make_error(std::errc::value_too_large);
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(uresult <= U(min_v<V>) && (uresult != U(min_v<V>) || negate));
 
         return EH::make_result(negate ? V(-uresult) : V(uresult));
     }

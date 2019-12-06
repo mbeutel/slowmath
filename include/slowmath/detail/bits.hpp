@@ -3,10 +3,10 @@
 #define INCLUDED_SLOWMATH_DETAIL_BITS_HPP_
 
 
-#include <climits>      // for CHAR_BIT
-#include <system_error> // for errc
+#include <climits> // for CHAR_BIT
 
-#include <slowmath/detail/type_traits.hpp> // for max_v<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/type_traits.hpp>    // for max_v<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -26,8 +26,9 @@ template <typename EH, typename X, typename S>
 constexpr result_t<EH, integral_value_type<X>> shift_right(X x, S s)
 {
     using V0 = integral_value_type<X>;
+    using S0 = integral_value_type<S>;
 
-    if (s >= gsl::narrow_cast<integral_value_type<S>>(sizeof(X) * CHAR_BIT)) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S(sizeof(X) * CHAR_BIT));
     return EH::make_result(V0(x >> V0(s)));
 }
 
@@ -36,8 +37,9 @@ template <typename EH, typename X, typename S>
 constexpr result_t<EH, integral_value_type<X>> shift_left(X x, S s)
 {
     using V0 = integral_value_type<X>;
+    using S0 = integral_value_type<S>;
 
-    if (s >= gsl::narrow_cast<integral_value_type<S>>(sizeof(V0) * CHAR_BIT) || x > (max_v<V0> >> s)) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S(sizeof(X) * CHAR_BIT) && x <= (max_v<V0> >> s));
     return EH::make_result(V0(x << V0(s)));
 }
 

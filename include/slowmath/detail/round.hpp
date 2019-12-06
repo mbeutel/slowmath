@@ -3,9 +3,8 @@
 #define INCLUDED_SLOWMATH_DETAIL_ROUND_HPP_
 
 
-#include <system_error> // for errc
-
-#include <slowmath/detail/type_traits.hpp> // for max_v<>, common_integral_value_type<>, result_t<>
+#include <slowmath/detail/type_traits.hpp>    // for max_v<>, common_integral_value_type<>, result_t<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -46,7 +45,7 @@ constexpr result_t<EH, common_integral_value_type<X, D>> ceili(X x, D d)
 
     if (x == 0) return EH::make_result(V(0));
     V dx = d - (x - 1) % d - 1;
-    if (x > max_v<V> - dx) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(x <= max_v<V> - dx);
     return EH::make_result(V(x + dx));
 }
 

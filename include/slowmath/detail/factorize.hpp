@@ -4,7 +4,7 @@
 
 
 #include <slowmath/detail/arithmetic.hpp>     // for multiply<>()
-#include <slowmath/detail/error-handling.hpp> // for try_error_handler
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK(), try_error_handler
 #include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
 
 
@@ -155,7 +155,7 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, E, 2>>
     if (EH::is_error(facAResult)) return EH::passthrough_error(facAResult);
     auto facA = EH::get_value(facAResult);
 
-    if (x > max_v<V> - facA.remainder) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(x <= max_v<V> - facA.remainder);
     V y0 = x + facA.remainder;
 
     E i = facA.exponent1,

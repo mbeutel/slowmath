@@ -4,9 +4,9 @@
 
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
-#include <system_error> // for errc
 
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -35,8 +35,8 @@ constexpr result_t<EH, integral_value_type<V>> absi(V v)
 
     if (std::is_signed<V0>::value)
     {
-            // This assumes a two's complement representation (it will yield a false negative for one's complement integers).
-        if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
+            // This assumes a two's complement representation.
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(v != min_v<V0>);
         return EH::make_result(V0(v < 0 ? -v : v));
     }
     else
@@ -53,14 +53,14 @@ constexpr result_t<EH, integral_value_type<V>> negate(V v)
 
     if (std::is_signed<V0>::value)
     {
-        if (v == min_v<V0>) return EH::make_error(std::errc::value_too_large);
-        return EH::make_result(V0(-v));
+            // This assumes a two's complement representation.
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(v != min_v<V0>);
     }
     else
     {
-        if (v != 0) return EH::make_error(std::errc::value_too_large);
-        return EH::make_result(V0(0));
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(v == 0);
     }
+    return EH::make_result(V0(-v));
 }
 
 
@@ -71,7 +71,7 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add_narrow(A a, B b)
     using W = wider_type<V>;
 
     W result = W(a) + W(b);
-    if (result < min_v<V> || result > max_v<V>) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(result >= min_v<V> && result <= max_v<V>);
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
@@ -83,15 +83,13 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add_wide(A a, B b)
     V result = V(U(a) + U(b));
     if (std::is_signed<V>::value)
     {
-        if ((a <  0 && b <  0 && result >= 0)
-         || (a >= 0 && b >= 0 && result <  0))
-        {
-            return EH::make_error(std::errc::value_too_large);
-        }
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(
+            !(a < 0 && b < 0 && result >= 0)
+         && !(a > 0 && b > 0 && result <  0));
     }
     else
     {
-        if (result < a || result < b) return EH::make_error(std::errc::value_too_large);
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(result >= a && result >= b);
     }
     return EH::make_result(result);
 }
@@ -121,17 +119,14 @@ constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
 
     if (std::is_signed<V>::value)
     {
-        if ((b > 0 && a < min_v<V> + b)
-         || (b < 0 && a > max_v<V> + b))
-        {
-            return EH::make_error(std::errc::value_too_large);
-        }
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(
+            !(b > 0 && a < min_v<V> + b)
+         && !(b < 0 && a > max_v<V> + b));
     }
     else
     {
-        if (a < b) return EH::make_error(std::errc::value_too_large);
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(a >= b);
     }
-
     return EH::make_result(V(a - b));
 }
 
@@ -143,7 +138,7 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B 
     using W = wider_type<V>;
 
     W result = W(a) * W(b);
-    if (result < min_v<V> || result > max_v<V>) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(result >= min_v<V> && result <= max_v<V>);
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
@@ -153,17 +148,14 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide(A a, B b)
 
     if (std::is_signed<V>::value)
     {
-        if (   (a > 0 && ((b > 0 && a > max_v<V> / b) || (b <= 0 && b < min_v<V> / a)))
-            || (a < 0 && ((b > 0 && a < min_v<V> / b) || (b <= 0 && b < max_v<V> / a))))
-        {
-            return EH::make_error(std::errc::value_too_large);
-        }
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(
+            !(a > 0 && ((b > 0 && a > max_v<V> / b) || (b <= 0 && b < min_v<V> / a)))
+         && !(a < 0 && ((b > 0 && a < min_v<V> / b) || (b <= 0 && b < max_v<V> / a))));
     }
     else
     {
-        if (b > 0 && a > max_v<V> / b) return EH::make_error(std::errc::value_too_large);
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(!(b > 0 && a > max_v<V> / b));
     }
-
     return EH::make_result(V(a * b));
 }
 template <typename EH, typename A, typename B>
@@ -190,7 +182,7 @@ constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(!(std::is_signed<V>::value && n == min_v<V> && d == -1));
     return EH::make_result(V(n / d));
 }
 
@@ -200,7 +192,7 @@ constexpr result_t<EH, common_integral_value_type<N, D>> modulo(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    if (std::is_signed<V>::value && n == min_v<V> && d == -1) return EH::make_error(std::errc::value_too_large);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(!(std::is_signed<V>::value && n == min_v<V> && d == -1));
     return EH::make_result(V(n % d));
 }
 
