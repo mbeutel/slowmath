@@ -416,7 +416,7 @@ try_square(V v)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
 
-    return detail::square<detail::try_error_handler>(v, v);
+    return detail::square<detail::try_error_handler>(v);
 }
 
 #if gsl_HAVE_EXCEPTIONS
@@ -430,7 +430,7 @@ square_or_throw(V v)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
 
-    return detail::square<detail::throw_error_handler>(v, v);
+    return detail::square<detail::throw_error_handler>(v);
 }
 #endif // gsl_HAVE_EXCEPTIONS
 

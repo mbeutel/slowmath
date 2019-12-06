@@ -12,6 +12,7 @@ project(slowmath
 
 # Define build options.
 option(SLOWMATH_BUILD_TESTS "Build tests" OFF)
+option(CMAKE_EXPORT_PACKAGE_REGISTRY "Export to user package registry" OFF)
 
 # Include target definitions.
 add_subdirectory(src)

@@ -42,13 +42,13 @@ constexpr V sqrti(V v)
 
     // Computes v².
 template <typename EH, typename V>
-constexpr int square(V v)
+constexpr integral_value_type<V> square(V v)
 {
     using V0 = integral_value_type<V>;
 
     constexpr V0 m = detail::sqrti(max_v<V0>);
     SLOWMATH_DETAIL_OVERFLOW_CHECK(v <= m && (!std::is_signed<V0>::value || v >= -m));
-    return EH::make_result(V(v*v));
+    return EH::make_result(V0(v*v));
 }
 
 
