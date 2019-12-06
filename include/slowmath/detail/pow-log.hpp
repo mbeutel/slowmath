@@ -65,24 +65,18 @@ constexpr int bit_scan_reverse(U mask)
 }
 
 
-    // Computes bᵉ for e ∊ ℕ₀.
+    // Computes bᵉ for b, e ∊ ℕ₀.
 template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi_unsigned(B b, E e)
+constexpr result_t<EH, integral_value_type<B>> powi_0(B b, E e)
 {
     using V = integral_value_type<B>;
     using E0 = integral_value_type<E>;
-
-        // Conventionally, `powi(0,0)` is 1.
-    if (e == 0) return EH::make_result(V(e != 0 ? 0 : 1));
-    if (b <= 1 || e == 1) return EH::make_result(V(b));
-
-        // We assume `b > 1 && e > 1` henceforth.
 
     constexpr V mSq = detail::sqrti(max_v<V>);
     V mb = max_v<V> / b;
 
     V cb = 1;
-    for (E0 bit = E0(1) << E0(detail::bit_scan_reverse(e)); bit > 0; bit /= 2)
+    for (E0 bit = E0(1) << E0(detail::bit_scan_reverse(e)); bit > 0; bit >>= 1)
     {
         if (cb > mSq) return EH::make_error(std::errc::value_too_large);
         cb *= cb;
@@ -94,65 +88,27 @@ constexpr result_t<EH, integral_value_type<B>> powi_unsigned(B b, E e)
     }
     return EH::make_result(V(cb));
 }
-    // Computes bᵉ for e ∊ ℕ₀.
-template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi_signed(B b, E e)
-{
-    using V = integral_value_type<B>;
-
-        // In the special case of `b` assuming the smallest representable value, `signIn * b` would overflow,
-        // so we need to handle it separately.
-    if (b == min_v<V>)
-    {
-        if (e > 1) return EH::make_error(std::errc::value_too_large); // `powi()` would overflow for exponents greater than 1
-        return EH::make_result(V(e == 0 ? V(1) : b));
-    }
-
-        // Factor out sign.
-    V signIn = b >= 0
-        ? 1
-        : -1;
-    V signOut = e % 2 == 0
-        ? 1
-        : signIn;
-
-        // Compute `powi()` for unsigned positive number.
-    using U = std::make_unsigned_t<V>;
-    U absPow = detail::powi_unsigned<EH>(U(signIn * b), e);
-
-        // Handle special case where result is smallest representable value.
-    if (signOut == -1 && absPow == U(max_v<V>) + 1)
-    {
-        return EH::make_result(min_v<V>); // assuming two's complement
-    }
-
-        // Convert back to signed and prefix with sign.
-    if (absPow > U(max_v<V>)) return EH::make_error(std::errc::value_too_large);
-    return EH::make_result(V(signOut * V(absPow)));
-}
-#if !gsl_CPP17_OR_GREATER
-template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi_0(std::false_type /*isSigned*/, B b, E e)
-{
-    return detail::powi_unsigned<EH>(b, e);
-}
-template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi_0(std::true_type /*isSigned*/, B b, E e)
-{
-    return detail::powi_signed<EH>(b, e);
-}
-#endif // !gsl_CPP17_OR_GREATER
 template <typename EH, typename B, typename E>
 constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
 {
     using V = integral_value_type<B>;
+    using U = std::make_unsigned_t<V>;
 
-#if gsl_CPP17_OR_GREATER
-    if constexpr (std::is_signed_v<V>) return detail::powi_signed<EH>(b, e);
-    else return detail::powi_unsigned<EH>(b, e);
-#else // gsl_CPP17_OR_GREATER
-    return detail::powi_0<EH>(std::is_signed<V>{ }, b, e);
-#endif // gsl_CPP17_OR_GREATER
+        // Case needs to be handled separately to avoid division by zero in `powi_0()`.
+    if (b == 0) return EH::make_result(V(e == 0 ? 1 : 0));
+
+    if (b < 0)
+    {
+            // Compute `powi()` for unsigned positive number. Here we exploit that `-U(min_v<V>) == U(min_v<V>)`.
+        U uresult = powi_0<EH>(U(-U(b)), e);
+        bool negate = e % 2 != 0;
+
+            // Check for overflow (note the slight differente for positive vs. negative results).
+        if (uresult > U(min_v<V>) || (uresult == U(min_v<V>) && !negate)) return EH::make_error(std::errc::value_too_large);
+
+        return EH::make_result(negate ? V(-uresult) : V(uresult));
+    }
+    return detail::powi_0<EH>(b, e);
 }
 
 
