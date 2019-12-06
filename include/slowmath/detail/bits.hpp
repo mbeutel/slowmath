@@ -28,7 +28,7 @@ constexpr result_t<EH, integral_value_type<X>> shift_right(X x, S s)
     using V0 = integral_value_type<X>;
     using S0 = integral_value_type<S>;
 
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S(sizeof(X) * CHAR_BIT));
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S0(sizeof(X) * CHAR_BIT));
     return EH::make_result(V0(x >> V0(s)));
 }
 
@@ -39,7 +39,7 @@ constexpr result_t<EH, integral_value_type<X>> shift_left(X x, S s)
     using V0 = integral_value_type<X>;
     using S0 = integral_value_type<S>;
 
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S(sizeof(X) * CHAR_BIT) && x <= (max_v<V0> >> s));
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(s < S0(sizeof(X) * CHAR_BIT) && x <= (max_v<V0> >> s));
     return EH::make_result(V0(x << V0(s)));
 }
 
