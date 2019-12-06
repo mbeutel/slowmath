@@ -122,7 +122,7 @@ constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
     if (std::is_signed<V>::value)
     {
         if ((b > 0 && a < min_v<V> + b)
-        || (b < 0 && a > max_v<V> + b))
+         || (b < 0 && a > max_v<V> + b))
         {
             return EH::make_error(std::errc::value_too_large);
         }
