@@ -8,8 +8,8 @@
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
-# pragma warning( push )
-# pragma warning( disable: 4702 ) // unreachable code
+# pragma warning(push)
+# pragma warning(disable: 4702) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 
@@ -74,7 +74,7 @@ constexpr common_integral_value_type<N, D> ratio_ceili(N n, D d)
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
- #pragma warning( pop )
+# pragma warning(pop)
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 

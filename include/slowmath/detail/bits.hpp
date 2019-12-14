@@ -10,8 +10,8 @@
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
-# pragma warning( push )
-# pragma warning( disable: 4702 ) // unreachable code
+# pragma warning(push)
+# pragma warning(disable: 4702) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 
@@ -50,7 +50,7 @@ constexpr result_t<EH, integral_value_type<X>> shift_left(X x, S s)
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
- #pragma warning( pop )
+# pragma warning(pop)
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 

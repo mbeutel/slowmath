@@ -8,9 +8,8 @@
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
-# pragma warning( push )
-//# pragma warning( disable: 4127 ) // conditional expression is constant
-# pragma warning( disable: 4702 ) // unreachable code
+# pragma warning(push)
+# pragma warning(disable: 4702) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 
@@ -40,7 +39,7 @@ constexpr result_t<EH, DstT> integral_cast(SrcT src)
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
- #pragma warning( pop )
+# pragma warning(pop)
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 

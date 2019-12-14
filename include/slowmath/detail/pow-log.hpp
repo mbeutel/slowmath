@@ -12,9 +12,9 @@
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
-# pragma warning( push )
-# pragma warning( disable: 4146 ) // unary minus operator applied to unsigned type, result still unsigned
-# pragma warning( disable: 4702 ) // unreachable code
+# pragma warning(push)
+# pragma warning(disable: 4146) // unary minus operator applied to unsigned type, result still unsigned
+# pragma warning(disable: 4702) // unreachable code
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 
@@ -177,7 +177,7 @@ constexpr E log_ceili(X x, B b)
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
- #pragma warning( pop )
+# pragma warning(pop)
 #endif // defined(_MSC_VER) && !defined(__clang__)
 
 
