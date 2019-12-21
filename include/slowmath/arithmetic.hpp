@@ -72,8 +72,9 @@ struct arithmetic_result
 };
 
 
-    //ᅟ
+    //
     // Computes |v|.
+    //ᅟ
     // Uses `Expects()` to raise error upon underflow.
     //
 template <typename V>
@@ -85,8 +86,9 @@ absi(V v)
     return detail::absi<detail::assert_error_handler>(v);
 }
 
-    //ᅟ
+    //
     // Computes |v|.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon underflow.
     //
 template <typename V>
@@ -99,8 +101,9 @@ try_absi(V v)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes |v|.
+    //ᅟ
     // Throws `std::system_error` upon underflow.
     //
 template <typename V>
@@ -114,8 +117,9 @@ absi_or_throw(V v)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes -v.
+    //ᅟ
     // Uses `Expects()` to raise error upon underflow.
     //
 template <typename V>
@@ -127,8 +131,9 @@ negate(V v)
     return detail::negate<detail::assert_error_handler>(v);
 }
 
-    //ᅟ
+    //
     // Computes -v.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon underflow.
     //
 template <typename V>
@@ -141,8 +146,9 @@ try_negate(V v)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes -v.
+    //ᅟ
     // Throws `std::system_error` upon underflow.
     //
 template <typename V>
@@ -156,8 +162,9 @@ negate_or_throw(V v)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes a + b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename A, typename B>
@@ -170,8 +177,9 @@ add(A a, B b)
     return detail::add<detail::assert_error_handler>(a, b);
 }
 
-    //ᅟ
+    //
     // Computes a + b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename A, typename B>
@@ -185,8 +193,9 @@ try_add(A a, B b)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes a + b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename A, typename B>
@@ -201,8 +210,9 @@ add_or_throw(A a, B b)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes a - b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename A, typename B>
@@ -215,8 +225,9 @@ subtract(A a, B b)
     return detail::subtract<detail::assert_error_handler>(a, b);
 }
 
-    //ᅟ
+    //
     // Computes a - b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename A, typename B>
@@ -230,8 +241,9 @@ try_subtract(A a, B b)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes a - b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename A, typename B>
@@ -246,8 +258,9 @@ subtract_or_throw(A a, B b)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename A, typename B>
@@ -260,8 +273,9 @@ multiply(A a, B b)
     return detail::multiply<detail::assert_error_handler>(a, b);
 }
 
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename A, typename B>
@@ -275,8 +289,9 @@ try_multiply(A a, B b)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename A, typename B>
@@ -291,8 +306,9 @@ multiply_or_throw(A a, B b)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes n ÷ d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename N, typename D>
@@ -307,8 +323,9 @@ divide(N n, D d)
     return detail::divide<detail::assert_error_handler>(n, d);
 }
 
-    //ᅟ
+    //
     // Computes n ÷ d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename N, typename D>
@@ -324,8 +341,9 @@ try_divide(N n, D d)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes n ÷ d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename N, typename D>
@@ -342,8 +360,9 @@ divide_or_throw(N n, D d)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes n mod d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename N, typename D>
@@ -358,8 +377,9 @@ modulo(N n, D d)
     return detail::modulo<detail::assert_error_handler>(n, d);
 }
 
-    //ᅟ
+    //
     // Computes n mod d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename N, typename D>
@@ -375,8 +395,9 @@ try_modulo(N n, D d)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes n mod d for d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename N, typename D>
@@ -393,8 +414,9 @@ modulo_or_throw(N n, D d)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename V>
@@ -406,8 +428,9 @@ square(V v)
     return detail::square<detail::assert_error_handler>(v);
 }
 
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename V>
@@ -420,8 +443,9 @@ try_square(V v)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes a ∙ b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename V>
@@ -435,8 +459,9 @@ square_or_throw(V v)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename S>
@@ -450,8 +475,9 @@ shift_left(X x, S s)
     return detail::shift_left<detail::assert_error_handler>(x, s);
 }
 
-    //ᅟ
+    //
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename S>
@@ -466,8 +492,9 @@ try_shift_left(X x, S s)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename S>
@@ -483,8 +510,9 @@ shift_left_or_throw(X x, S s)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename S>
@@ -498,8 +526,9 @@ shift_right(X x, S s)
     return detail::shift_right<detail::assert_error_handler>(x, s);
 }
 
-    //ᅟ
+    //
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename S>
@@ -514,8 +543,9 @@ try_shift_right(X x, S s)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename S>
@@ -531,8 +561,9 @@ shift_right_or_throw(X x, S s)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes bᵉ for e ∊ ℕ₀.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename B, typename E>
@@ -546,8 +577,9 @@ powi(B b, E e)
     return detail::powi<detail::assert_error_handler>(b, e);
 }
 
-    //ᅟ
+    //
     // Computes bᵉ for e ∊ ℕ₀.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename B, typename E>
@@ -562,8 +594,9 @@ try_powi(B b, E e)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes bᵉ for e ∊ ℕ₀.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename B, typename E>
@@ -579,8 +612,9 @@ powi_or_throw(B b, E e)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes ⌊x ÷ d⌋ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename X, typename D>
@@ -596,8 +630,9 @@ floori(X x, D d)
 }
 
 
-    //ᅟ
+    //
     // Computes ⌈x ÷ d⌉ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename X, typename D>
@@ -612,8 +647,9 @@ ceili(X x, D d)
     return detail::ceili<detail::assert_error_handler>(x, d);
 }
 
-    //ᅟ
+    //
     // Computes xᵉ for d ∊ ℕ₀.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename X, typename D>
@@ -629,8 +665,9 @@ try_ceili(X x, D d)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes xᵉ for d ∊ ℕ₀.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename X, typename D>
@@ -647,8 +684,9 @@ ceili_or_throw(X x, D d)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes ⌊n ÷ d⌋ for n ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename N, typename D>
@@ -664,8 +702,9 @@ ratio_floori(N n, D d)
 }
 
 
-    //ᅟ
+    //
     // Computes ⌈n ÷ d⌉ for n ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename N, typename D>
@@ -681,8 +720,9 @@ ratio_ceili(N n, D d)
 }
 
 
-    //ᅟ
+    //
     // Computes ⌊log x ÷ log b⌋ for x,b ∊ ℕ, x > 0, b > 1.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename E, typename X, typename B>
@@ -698,8 +738,9 @@ log_floori(X x, B b)
 }
 
 
-    //ᅟ
+    //
     // Computes ⌈log x ÷ log b⌉ for x,b ∊ ℕ, x > 0, b > 1.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename E, typename X, typename B>
@@ -715,8 +756,9 @@ log_ceili(X x, B b)
 }
 
 
-    //ᅟ
+    //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ + r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename E, typename X, typename B>
@@ -733,8 +775,9 @@ factorize_floori(X x, B b)
 }
 
 
-    //ᅟ
+    //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename E, typename X, typename B>
@@ -750,8 +793,9 @@ factorize_ceili(X x, B b)
     return detail::factorize_ceili<detail::assert_error_handler, E>(x, b);
 }
 
-    //ᅟ
+    //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename E, typename X, typename B>
@@ -768,8 +812,9 @@ try_factorize_ceili(X x, B b)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename E, typename X, typename B>
@@ -787,8 +832,9 @@ factorize_ceili_or_throw(X x, B b)
 #endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`.
     //
 template <typename E, typename X, typename A, typename B>
@@ -805,8 +851,9 @@ factorize_floori(X x, A a, B b)
 }
 
 
-    //ᅟ
+    //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Uses `Expects()` to raise error upon overflow.
     //
 template <typename E, typename X, typename A, typename B>
@@ -822,8 +869,9 @@ factorize_ceili(X x, A a, B b)
     return detail::factorize_ceili<detail::assert_error_handler, E>(x, a, b);
 }
 
-    //ᅟ
+    //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename E, typename X, typename A, typename B>
@@ -840,8 +888,9 @@ try_factorize_ceili(X x, A a, B b)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r,{ i, j }) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `Expects()`. Throws `std::system_error` upon overflow.
     //
 template <typename E, typename X, typename A, typename B>
@@ -860,8 +909,9 @@ factorize_ceili_or_throw(X x, A a, B b)
 
 
 #if gsl_CPP17_OR_GREATER
-    //ᅟ
+    //
     // Computes the greatest common divisor of a and b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename A, typename B>
@@ -874,8 +924,9 @@ gcd(A a, B b)
     return detail::gcd<detail::assert_error_handler>(a, b);
 }
 
-    //ᅟ
+    //
     // Computes the greatest common divisor of a and b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename A, typename B>
@@ -889,8 +940,9 @@ try_gcd(A a, B b)
 }
 
 # if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes the greatest common divisor of a and b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename A, typename B>
@@ -905,8 +957,9 @@ gcd_or_throw(A a, B b)
 # endif // gsl_HAVE_EXCEPTIONS
 
 
-    //ᅟ
+    //
     // Computes the least common multiple of a and b.
+    //ᅟ
     // Uses `Expects()` to raise error upon overflow.
     //
 template <typename A, typename B>
@@ -919,8 +972,9 @@ lcm(A a, B b)
     return detail::lcm<detail::assert_error_handler>(a, b);
 }
 
-    //ᅟ
+    //
     // Computes the least common multiple of a and b.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename A, typename B>
@@ -934,8 +988,9 @@ try_lcm(A a, B b)
 }
 
 # if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Computes the least common multiple of a and b.
+    //ᅟ
     // Throws `std::system_error` upon overflow.
     //
 template <typename A, typename B>
@@ -951,8 +1006,9 @@ lcm_or_throw(A a, B b)
 #endif // gsl_CPP17_OR_GREATER
 
 
-    //ᅟ
+    //
     // Casts the given integer value to `DstT`.
+    //ᅟ
     // Uses `Expects()` to raise error if the value cannot be represented in the target type.
     //
 template <typename DstT, typename SrcT>
@@ -964,8 +1020,9 @@ integral_cast(SrcT src)
     return detail::integral_cast<detail::assert_error_handler, DstT>(src);
 }
 
-    //ᅟ
+    //
     // Casts the given integer value to `DstT`.
+    //ᅟ
     // Returns error code `std::errc::value_too_large` if the value cannot be represented in the target type.
     //
 template <typename DstT, typename SrcT>
@@ -978,8 +1035,9 @@ try_integral_cast(SrcT src)
 }
 
 #if gsl_HAVE_EXCEPTIONS
-    //ᅟ
+    //
     // Casts the given integer value to `DstT`.
+    //ᅟ
     // Throws `std::system_error` if the value cannot be represented in the target type.
     //
 template <typename DstT, typename SrcT>

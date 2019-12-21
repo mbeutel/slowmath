@@ -102,7 +102,7 @@ constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
         U uresult = powi_0<EH>(U(-U(b)), e);
         bool negate = e % 2 != 0;
 
-            // Check for overflow (note the slight differente for positive vs. negative results).
+            // Check for overflow (note the slightly different treatment of positive vs. negative results).
         SLOWMATH_DETAIL_OVERFLOW_CHECK(uresult <= U(min_v<V>) && (uresult != U(min_v<V>) || negate));
 
         return EH::make_result(negate ? V(-uresult) : V(uresult));
@@ -158,7 +158,7 @@ constexpr E log_ceili(X x, B b)
         if (x0 > m)
         {
                 // x₀ = bᵉ < x, otherwise we wouldn't be in the loop.
-                // bᵉ > m implies bᵉ⁺¹ > M (cf. reasoning in factorize_floori()).
+                // bᵉ > m implies bᵉ⁺¹ > M (cf. reasoning in `factorize_floori()`).
                 // Because x ≤ M, ⌈log x ÷ log b⌉ = e + 1.
             return e + 1;
         }
