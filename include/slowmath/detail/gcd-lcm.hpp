@@ -6,7 +6,7 @@
 #include <numeric>      // for gcd(), lcm()
 #include <type_traits>  // for is_signed<>
 
-#include <gsl/gsl-lite.hpp> // for gsl_CPP17_OR_GREATER
+#include <gsl-lite/gsl-lite.hpp> // for gsl_CPP17_OR_GREATER
 
 #include <slowmath/detail/type_traits.hpp>    // for min_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
 #include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()

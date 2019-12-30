@@ -7,9 +7,15 @@
 #include <cstdint>      // for [u]int(8|16|32|64)_t
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>, is_integral<>, is_same<>, common_type<>
 
+#include <gsl-lite/gsl-lite.hpp> // for conjunction<>
+
 
 namespace slowmath
 {
+
+
+namespace gsl = ::gsl_lite;
+
 
 namespace detail
 {
@@ -27,15 +33,11 @@ template <> struct is_nonbool_integral<bool> : std::false_type { };
 template <typename V> struct is_value_type_nonbool_integral : is_nonbool_integral<V> { };
 template <typename V, V Value> struct is_value_type_nonbool_integral<std::integral_constant<V, Value>> : is_nonbool_integral<V> { };
 
-template <bool V0, typename T0, typename... Ts> struct mconjunction_ { using type = T0; };
-template <typename T0, typename T1, typename... Ts> struct mconjunction_<true, T0, T1, Ts...> : mconjunction_<T1::value, T1, Ts...> { };
-template <typename T0, typename... Ts> struct mconjunction : mconjunction_<T0::value, T0, Ts...>::type { };
+template <typename... Vs> constexpr bool are_integral_arithmetic_types_v = gsl::conjunction<is_nonbool_integral<Vs>...>::value;
 
-template <typename... Vs> constexpr bool are_integral_arithmetic_types_v = mconjunction<is_nonbool_integral<Vs>...>::value;
+template <typename... Vs> constexpr bool are_value_types_integral_arithmetic_types_v = gsl::conjunction<is_value_type_nonbool_integral<Vs>...>::value;
 
-template <typename... Vs> constexpr bool are_value_types_integral_arithmetic_types_v = mconjunction<is_value_type_nonbool_integral<Vs>...>::value;
-
-template <bool Signed, typename... Vs> using have_same_signedness_0 = mconjunction<std::integral_constant<bool, std::is_signed<integral_value_type<Vs>>::value == Signed>...>;
+template <bool Signed, typename... Vs> using have_same_signedness_0 = gsl::conjunction<std::integral_constant<bool, std::is_signed<integral_value_type<Vs>>::value == Signed>...>;
 template <typename... Vs> struct have_same_signedness;
 template <typename V0, typename... Vs> struct have_same_signedness<V0, Vs...> : have_same_signedness_0<std::is_signed<integral_value_type<V0>>::value, Vs...> { };
 template <> struct have_same_signedness<> : std::true_type { };

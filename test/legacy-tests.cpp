@@ -13,7 +13,7 @@
 
 #include <slowmath/arithmetic.hpp>
 
-#include <gsl/gsl-lite.hpp> // for fail_fast
+#include <gsl-lite/gsl-lite.hpp> // for fail_fast
 
 
 using std::uint8_t;

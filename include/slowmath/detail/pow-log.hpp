@@ -5,7 +5,7 @@
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
 
-#include <gsl/gsl-lite.hpp> // for Expects(), gsl_CPP17_OR_GREATER
+#include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_CPP17_OR_GREATER
 
 #include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
 #include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
@@ -30,7 +30,7 @@ namespace detail
 template <typename V>
 constexpr V sqrti(V v)
 {
-    Expects(v >= 0);
+    gsl_Expects(v >= 0);
 
     V a = 0;
     if (v < 2) return v;

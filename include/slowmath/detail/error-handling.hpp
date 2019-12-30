@@ -7,7 +7,7 @@
 #include <type_traits>  // for integral_constant<>
 #include <system_error> // for errc, system_error, error_code
 
-#include <gsl/gsl-lite.hpp> // for Expects(), gsl_HAVE_EXCEPTIONS
+#include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_HAVE_EXCEPTIONS
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -29,6 +29,9 @@
 
 namespace slowmath
 {
+
+
+namespace gsl = ::gsl_lite;
 
 
 template <typename T>
@@ -70,7 +73,7 @@ struct assert_error_handler
     }
     static constexpr SLOWMATH_DETAIL_FORCEINLINE std::true_type check(bool condition)
     {
-        Expects(condition);
+        gsl_Expects(condition);
         return { };
     }
     static inline unreachable_wildcard_t make_error(std::errc)
@@ -90,7 +93,7 @@ struct assert_error_handler
     template <typename T>
     static SLOWMATH_DETAIL_FORCEINLINE unreachable_wildcard_t passthrough_error(T)
     {
-        Expects(false);
+        gsl_Expects(false);
     }
 };
 
