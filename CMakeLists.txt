@@ -21,7 +21,7 @@ if(SLOWMATH_BUILD_TESTS)
     add_subdirectory(test)
 endif()
 
-## Install.
+# Install.
 find_package(CMakeshift 3.7 REQUIRED)
 include(CMakeshift/InstallBasicPackageFiles)
 cmakeshift_install_basic_package_files(slowmath
