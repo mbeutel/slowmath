@@ -11,29 +11,31 @@ find_package(Catch2 2.9 REQUIRED)
 find_package(CMakeshift 3.7 REQUIRED)
 find_package(gsl-lite 0.35.5 REQUIRED)
 
-# common settings target
-add_library(test-slowmath-settings INTERFACE)
+include(CMakeshift/TargetCompileSettings)
 
 # test runner target
-add_library(test-slowmath-runner OBJECT
-    "main.cpp")
+add_library(test-slowmath-runner OBJECT "main.cpp")
+target_compile_features(test-slowmath-runner PRIVATE cxx_std_14)
+cmakeshift_target_compile_settings(test-slowmath-runner PRIVATE default)
+target_link_libraries(test-slowmath-runner
+    PRIVATE
+        Catch2::Catch2)
 
-# test targets
-add_executable(test-slowmath-cxx14
-    "legacy-tests.cpp"
-    "test-arithmetic.cpp"
-    "test-bits.cpp"
-    "test-cast.cpp"
-    "test-factorize.cpp"
-    "test-gcd-lcm.cpp"
-    "test-pow-log.cpp"
-    "test-round.cpp")
-add_executable(test-slowmath-cxx17
-    "test-gcd-lcm.cpp")
-
-# precompiled headers
+# common settings target
+add_library(test-slowmath-settings INTERFACE)
+target_compile_definitions(test-slowmath-settings
+    INTERFACE
+        CATCH_CONFIG_CONSOLE_WIDTH=120
+        CATCH_CLARA_CONFIG_CONSOLE_WIDTH=120
+        gsl_CONFIG_CONTRACT_CHECKING_AUDIT # run audit-level checks
+        gsl_CONFIG_CONTRACT_VIOLATION_THROWS) # make gsl-lite's precondition assertions throw `gsl::fail_fast` on failure
+target_link_libraries(test-slowmath-settings
+    INTERFACE
+        gsl::gsl-lite-v1
+        Catch2::Catch2
+        slowmath)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    target_precompile_headers(test-slowmath-cxx14
+    target_precompile_headers(test-slowmath-settings
         INTERFACE
             # C standard library
             <climits>
@@ -55,47 +57,33 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
             <catch2/catch.hpp>)
 endif()
 
-# compiler settings
-include(CMakeshift/TargetCompileSettings)
-cmakeshift_target_compile_settings(
-    TARGETS test-slowmath-cxx14 test-slowmath-cxx17
-    PRIVATE
-        default)
-target_compile_features(test-slowmath-runner
-    PRIVATE
-        cxx_std_14)
-target_compile_features(test-slowmath-cxx14
-    PRIVATE
-        cxx_std_14)
-target_compile_features(test-slowmath-cxx17
-    PRIVATE
-        cxx_std_17)
-
-# test properties
-target_compile_definitions(test-slowmath-settings
-    INTERFACE
-        CATCH_CONFIG_CONSOLE_WIDTH=120
-        CATCH_CLARA_CONFIG_CONSOLE_WIDTH=120
-        gsl_CONFIG_CONTRACT_VIOLATION_THROWS) # this makes gsl-lite's precondition assertions throw `gsl::fail_fast` on failure
-
-# test dependencies
-target_link_libraries(test-slowmath-runner
-    PRIVATE
-        Catch2::Catch2)
-target_link_libraries(test-slowmath-settings
-    INTERFACE
-        slowmath
-        gsl::gsl-lite-v1
-        Catch2::Catch2)
+# C++14 tests
+add_executable(test-slowmath-cxx14
+    "legacy-tests.cpp"
+    "test-arithmetic.cpp"
+    "test-bits.cpp"
+    "test-cast.cpp"
+    "test-factorize.cpp"
+    "test-gcd-lcm.cpp"
+    "test-pow-log.cpp"
+    "test-round.cpp")
+target_compile_features(test-slowmath-cxx14 PRIVATE cxx_std_14)
+cmakeshift_target_compile_settings(test-slowmath-cxx14 PRIVATE default)
 target_link_libraries(test-slowmath-cxx14
     PRIVATE
         test-slowmath-runner
         test-slowmath-settings)
-target_link_libraries(test-slowmath-cxx17
-    PRIVATE
-        test-slowmath-runner
-        test-slowmath-settings)
-
-# register tests
 add_test(NAME test-slowmath-cxx14 COMMAND test-slowmath-cxx14)
-add_test(NAME test-slowmath-cxx17 COMMAND test-slowmath-cxx17)
+
+# C++17 tests
+if(cxx_std_17 IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+    add_executable(test-slowmath-cxx17
+        "test-gcd-lcm.cpp")
+    target_compile_features(test-slowmath-cxx17 PRIVATE cxx_std_17)
+    cmakeshift_target_compile_settings(test-slowmath-cxx17 PRIVATE default)
+    target_link_libraries(test-slowmath-cxx17
+        PRIVATE
+            test-slowmath-runner
+            test-slowmath-settings)
+    add_test(NAME test-slowmath-cxx17 COMMAND test-slowmath-cxx17)
+endif()
