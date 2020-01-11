@@ -31,9 +31,6 @@ namespace slowmath
 {
 
 
-namespace gsl = ::gsl_lite;
-
-
 template <typename T>
 struct arithmetic_result;
 

@@ -74,6 +74,7 @@ target_link_libraries(test-slowmath-cxx14
         test-slowmath-runner
         test-slowmath-settings)
 add_test(NAME test-slowmath-cxx14 COMMAND test-slowmath-cxx14)
+set_property(TEST test-slowmath-cxx14 PROPERTY FAIL_REGULAR_EXPRESSION "Sanitizer")
 
 # C++17 tests
 if(cxx_std_17 IN_LIST CMAKE_CXX_COMPILE_FEATURES)
@@ -86,4 +87,5 @@ if(cxx_std_17 IN_LIST CMAKE_CXX_COMPILE_FEATURES)
             test-slowmath-runner
             test-slowmath-settings)
     add_test(NAME test-slowmath-cxx17 COMMAND test-slowmath-cxx17)
+    set_property(TEST test-slowmath-cxx17 PROPERTY FAIL_REGULAR_EXPRESSION "Sanitizer")
 endif()
