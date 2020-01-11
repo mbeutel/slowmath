@@ -5,7 +5,7 @@
 
 #include <slowmath/detail/arithmetic.hpp>     // for multiply<>()
 #include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK(), try_error_handler
-#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/type_traits.hpp>    // for max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
 
 
 #if defined(_MSC_VER) && !defined(__clang__)

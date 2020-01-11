@@ -32,12 +32,13 @@ template <typename EH, typename V>
 constexpr result_t<EH, integral_value_type<V>> absi(V v)
 {
     using V0 = integral_value_type<V>;
+    using S = std::make_signed_t<V0>;
 
     if (std::is_signed<V0>::value)
     {
             // This assumes a two's complement representation.
         SLOWMATH_DETAIL_OVERFLOW_CHECK(v != min_v<V0>);
-        return EH::make_result(V0(v < 0 ? -v : v));
+        return EH::make_result(V0(S(v) < 0 ? -v : v)); // cast to signed to avoid warning about pointless unsigned comparison
     }
     else
     {
@@ -68,24 +69,29 @@ template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> add_narrow(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
+    using UV = std::make_unsigned_t<V>;
     using W = wider_type<V>;
+    using UW = std::make_unsigned_t<W>;
 
+        // This assumes a two's complement representation.
     W result = W(a) + W(b);
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(result >= min_v<V> && result <= max_v<V>);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(UW(result - W(min_v<V>)) <= max_v<UV>);
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> add_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
+    using S = std::make_signed_t<V>;
     using U = std::make_unsigned_t<V>;
 
     V result = V(U(a) + U(b));
     if (std::is_signed<V>::value)
     {
+            // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
-            !(a < 0 && b < 0 && result >= 0)
-         && !(a > 0 && b > 0 && result <  0));
+            !(S(a) < 0 && S(b) < 0 && S(result) >= 0)
+         && !(S(a) > 0 && S(b) > 0 && S(result) <  0));
     }
     else
     {
@@ -116,12 +122,14 @@ template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
+    using S = std::make_signed_t<V>;
 
     if (std::is_signed<V>::value)
     {
+            // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
-            !(b > 0 && a < min_v<V> + b)
-         && !(b < 0 && a > max_v<V> + b));
+            !(S(b) > 0 && a < min_v<V> + b)
+         && !(S(b) < 0 && a > max_v<V> + b));
     }
     else
     {
@@ -135,22 +143,27 @@ template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
+    using UV = std::make_unsigned_t<V>;
     using W = wider_type<V>;
+    using UW = std::make_unsigned_t<W>;
 
+        // This assumes a two's complement representation.
     W result = W(a) * W(b);
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(result >= min_v<V> && result <= max_v<V>);
+    SLOWMATH_DETAIL_OVERFLOW_CHECK(UW(result - W(min_v<V>)) <= max_v<UV>);
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
 constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
+    using S = std::make_signed_t<V>;
 
     if (std::is_signed<V>::value)
     {
+            // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
-            !(a > 0 && ((b > 0 && a > max_v<V> / b) || (b <= 0 && b < min_v<V> / a)))
-         && !(a < 0 && ((b > 0 && a < min_v<V> / b) || (b <= 0 && b < max_v<V> / a))));
+            !(S(a) > 0 && ((S(b) > 0 && S(a) > S(max_v<V> / b)) || (S(b) <= 0 && S(b < min_v<V> / a))))
+         && !(S(a) < 0 && ((S(b) > 0 && S(a) < S(min_v<V> / b)) || (S(b) <= 0 && S(b < max_v<V> / a)))));
     }
     else
     {
@@ -182,7 +195,10 @@ constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(!(std::is_signed<V>::value && n == min_v<V> && d == -1));
+    if (std::is_signed<V>::value)
+    {
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(!(n == min_v<V> && d == -1));
+    }
     return EH::make_result(V(n / d));
 }
 
@@ -192,7 +208,10 @@ constexpr result_t<EH, common_integral_value_type<N, D>> modulo(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    SLOWMATH_DETAIL_OVERFLOW_CHECK(!(std::is_signed<V>::value && n == min_v<V> && d == -1));
+    if (std::is_signed<V>::value)
+    {
+        SLOWMATH_DETAIL_OVERFLOW_CHECK(!(n == min_v<V> && d == -1));
+    }
     return EH::make_result(V(n % d));
 }
 
