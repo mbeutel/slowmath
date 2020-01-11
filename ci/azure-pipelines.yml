@@ -61,7 +61,7 @@ jobs:
 
     - os: Windows
       cxxCompiler: MSVC
-      cxxCompilerVersions: [2019]
+      cxxCompilerVersions: [19_1, 19_2]
       platforms: [x86, x64]
 
     - os: Windows
@@ -71,7 +71,7 @@ jobs:
 
     - os: Windows
       cxxCompiler: MSVC
-      cxxCompilerVersions: [2019]
+      cxxCompilerVersions: [19_2]
       cudaCompiler: NVCC
       cudaCompilerVersion: 10_2
       platforms: [x64]
