@@ -42,7 +42,7 @@ namespace detail
 struct unreachable_wildcard_t
 {
     template <typename T>
-    [[noreturn]] operator T(void) const noexcept
+    gsl_NORETURN operator T(void) const noexcept
     {
         std::terminate(); // unreachable
     }
@@ -142,7 +142,7 @@ struct throw_error_handler
     {
         return condition;
     }
-    [[noreturn]] static inline unreachable_wildcard_t make_error(std::errc ec)
+    gsl_NORETURN static inline unreachable_wildcard_t make_error(std::errc ec)
     {
         throw std::system_error(std::make_error_code(ec));
     }
