@@ -25,8 +25,8 @@ TEMPLATE_TEST_CASE("absi(), negate() for signed types", "[arithmetic]", std::int
 
     SECTION("throws on integer overflow")
     {
-        CHECK_THROWS_AS(slowmath::absi_or_throw(iMin), std::system_error);
-        CHECK_THROWS_AS(slowmath::negate_or_throw(iMin), std::system_error);
+        CHECK_THROWS_AS(slowmath::absi(iMin), std::system_error);
+        CHECK_THROWS_AS(slowmath::negate(iMin), std::system_error);
     }
 }
 
@@ -53,7 +53,7 @@ TEMPLATE_TEST_CASE("absi(), negate() for unsigned types", "[arithmetic]", std::u
 
         CAPTURE(x);
 
-        CHECK_THROWS_AS(slowmath::negate_or_throw(x), std::system_error);
+        CHECK_THROWS_AS(slowmath::negate(x), std::system_error);
     }
 }
 

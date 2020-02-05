@@ -59,7 +59,7 @@ struct errc_wildcard_t
     }
 };
 
-struct assert_error_handler
+struct failfast_error_handler
 {
     template <typename T> using result = T;
 
