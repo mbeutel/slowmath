@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.14)
 
 # Define the project.
 project(slowmath
-    VERSION 0.1.1
+    VERSION 0.2.0
     LANGUAGES CXX)
 
 # Define build options.
@@ -32,4 +32,4 @@ include(CMakeshift/InstallBasicPackageFiles)
 cmakeshift_install_basic_package_files(slowmath
     COMPATIBILITY SameMajorVersion
     DEPENDENCIES
-        "gsl-lite 0.35.6")
+        "gsl-lite 0.36")
