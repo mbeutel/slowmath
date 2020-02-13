@@ -1,4 +1,7 @@
 
+variables:
+- system.debug: true
+
 trigger:
 - master
 - mr/*
