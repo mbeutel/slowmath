@@ -47,7 +47,7 @@ jobs:
       cudaCompiler: NVCC
       cudaCompilerVersion: 10_2
       platforms: [x64]
-      cmakeConfigArgs: '-DSLOWMATH_BUILD_CUDA_TESTS=ON'
+      cmakeConfigArgs: '<cmakeConfigArgs> -DSLOWMATH_BUILD_CUDA_TESTS=ON'
 
     - os: Linux
       cxxCompiler: GCC
@@ -90,5 +90,5 @@ jobs:
 
     - os: MacOS
       cxxCompiler: AppleClang
-      cxxCompilerVersions: [8_1, 9, 9_1, 10, 10_0_1, 11]
+      cxxCompilerVersions: [9_1, 10, 10_0_1, 11]
       platforms: [x64]
