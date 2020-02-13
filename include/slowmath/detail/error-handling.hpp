@@ -42,7 +42,10 @@ namespace detail
 struct unreachable_wildcard_t
 {
     template <typename T>
-    gsl_NORETURN operator T(void) const noexcept
+#if !gsl_BETWEEN(gsl_COMPILER_MSVC_VERSION, 1, 142) // work around bug in VC++ 2017
+    gsl_NORETURN
+#endif // !gsl_BETWEEN(gsl_COMPILER_MSVC_VERSION, 1, 142)
+    operator T(void) const noexcept
     {
         std::terminate(); // unreachable
     }
