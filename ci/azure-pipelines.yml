@@ -20,9 +20,9 @@ resources:
 jobs:
 - template: azure-pipelines-job-cmake.yml@templates
   parameters:
-    vcpkgRef: bc01338fe2d50f4a24b7f56b53bc385d8de8ccd9
+    vcpkgRef: 5deea3b975fe62990973d73a102de818d83ba20c
     vcpkgOverlayRepo: 'https://mp-force.ziti.uni-heidelberg.de/asc/infrastructure/vcpkg-ports.git'
-    vcpkgOverlayRef: a3af41edd36c5a2be17d44f2da0085db11b36331
+    vcpkgOverlayRef: 283641e8acbe7cc69e20c1f433c60b49ec144277
     vcpkgPackages: ['cmakeshift', 'gsl-lite', 'catch2']
 
     cmakeConfigArgs: '-DSLOWMATH_BUILD_TESTS=ON'
