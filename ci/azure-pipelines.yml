@@ -41,6 +41,7 @@ jobs:
       platforms: [x64]
       tag: 'sanitize'
       vcpkgTriplet: <platform>-<os>-sanitize
+      cmakeBuildConfigurations: [Debug]
       cmakeConfigArgs: '<cmakeConfigArgs> -DCMAKESHIFT_PRIVATE_COMPILE_SETTINGS=runtime-checks;debug-stdlib'
 
     - os: Linux
@@ -54,6 +55,7 @@ jobs:
       platforms: [x64]
       tag: 'sanitize'
       vcpkgTriplet: <platform>-<os>-sanitize
+      cmakeBuildConfigurations: [Debug]
       cmakeConfigArgs: '<cmakeConfigArgs> -DCMAKESHIFT_PRIVATE_COMPILE_SETTINGS=runtime-checks;debug-stdlib'
 
     - os: Linux
