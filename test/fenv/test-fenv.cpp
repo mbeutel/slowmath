@@ -75,7 +75,7 @@ extern "C"
 {
 
 //[[gnu::no_caller_saved_registers]]
-void fpSignalHandler([[maybe_unused]] int sig)
+void fpSignalHandler(int)
 {
     asm(".cfi_signal_frame");
     throw FPException();
