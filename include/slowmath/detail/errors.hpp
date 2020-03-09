@@ -40,6 +40,31 @@ namespace detail
 {
 
 
+[[noreturn]] inline void
+posix_raise(int errorCode)
+{
+    throw std::system_error(std::error_code(errorCode, std::generic_category()));
+}
+
+[[noreturn]] inline void
+posix_raise_last_error(void)
+{
+    detail::posix_raise(errno);
+}
+
+inline void
+posix_check(int errorCode)
+{
+    if (errorCode != 0) detail::posix_raise(errorCode);
+}
+
+inline void
+posix_assert(bool success)
+{
+    if (!success) detail::posix_raise_last_error();
+}
+
+
 struct unreachable_wildcard_t
 {
     template <typename T>

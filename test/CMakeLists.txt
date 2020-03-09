@@ -23,6 +23,7 @@ target_link_libraries(test-slowmath-runner
 
 # common settings target
 add_library(test-slowmath-settings INTERFACE)
+add_library(test-slowmath-pch INTERFACE)
 target_compile_definitions(test-slowmath-settings
     INTERFACE
         CATCH_CONFIG_CONSOLE_WIDTH=120
@@ -35,7 +36,7 @@ target_link_libraries(test-slowmath-settings
         Catch2::Catch2
         slowmath)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    target_precompile_headers(test-slowmath-settings
+    target_precompile_headers(test-slowmath-pch
         INTERFACE
             # C standard library
             <climits>
@@ -72,7 +73,8 @@ cmakeshift_target_compile_settings(test-slowmath-cxx14 PRIVATE default)
 target_link_libraries(test-slowmath-cxx14
     PRIVATE
         test-slowmath-runner
-        test-slowmath-settings)
+        test-slowmath-settings
+        test-slowmath-pch)
 add_test(NAME test-slowmath-cxx14 COMMAND test-slowmath-cxx14)
 set_property(TEST test-slowmath-cxx14 PROPERTY FAIL_REGULAR_EXPRESSION "Sanitizer")
 
