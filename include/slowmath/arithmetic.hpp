@@ -8,16 +8,16 @@
 
 #include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_CPP17_OR_GREATER, gsl_HAVE_EXCEPTIONS, gsl_NODISCARD
 
-#include <slowmath/detail/type_traits.hpp>    // for are_integral_arithmetic_types_v<>, have_same_signedness_v<>
-#include <slowmath/detail/error-handling.hpp> // for failfast_error_handler, try_error_handler, throw_error_handler
+#include <slowmath/detail/type_traits.hpp> // for are_integral_arithmetic_types_v<>, have_same_signedness_v<>
+#include <slowmath/detail/errors.hpp>      // for failfast_error_handler, try_error_handler, throw_error_handler
 
-#include <slowmath/detail/arithmetic.hpp>     // for absi(), negate(), add(), subtract(), multiply(), divide(), modulo()
-#include <slowmath/detail/bits.hpp>           // for shift_right(), shift_left()
-#include <slowmath/detail/gcd-lcm.hpp>        // for gcd(), lcm()
-#include <slowmath/detail/pow-log.hpp>        // for square(), powi(), log_floori(), log_ceili()
-#include <slowmath/detail/round.hpp>          // for floori(), ceili(), ratio_floori(), ratio_ceili()
-#include <slowmath/detail/factorize.hpp>      // for factorize_floori(), factorize_ceili()
-#include <slowmath/detail/cast.hpp>           // for integral_cast<>()
+#include <slowmath/detail/arithmetic.hpp>  // for absi(), negate(), add(), subtract(), multiply(), divide(), modulo()
+#include <slowmath/detail/bits.hpp>        // for shift_right(), shift_left()
+#include <slowmath/detail/gcd-lcm.hpp>     // for gcd(), lcm()
+#include <slowmath/detail/pow-log.hpp>     // for square(), powi(), log_floori(), log_ceili()
+#include <slowmath/detail/round.hpp>       // for floori(), ceili(), ratio_floori(), ratio_ceili()
+#include <slowmath/detail/factorize.hpp>   // for factorize_floori(), factorize_ceili()
+#include <slowmath/detail/cast.hpp>        // for integral_cast<>()
 
 
 namespace slowmath

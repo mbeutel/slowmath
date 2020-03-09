@@ -8,8 +8,8 @@
 
 #include <gsl-lite/gsl-lite.hpp> // for gsl_CPP17_OR_GREATER
 
-#include <slowmath/detail/type_traits.hpp>    // for min_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for min_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -28,7 +28,8 @@ namespace detail
 #if gsl_CPP17_OR_GREATER
     // Computes the greatest common divisor of a and b.
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> gcd(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+gcd(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
@@ -43,7 +44,8 @@ constexpr result_t<EH, common_integral_value_type<A, B>> gcd(A a, B b)
 
     // Computes the least common multiple of a and b.
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> lcm(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+lcm(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 

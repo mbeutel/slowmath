@@ -3,8 +3,8 @@
 #define INCLUDED_SLOWMATH_DETAIL_ROUND_HPP_
 
 
-#include <slowmath/detail/type_traits.hpp>    // for max_v<>, common_integral_value_type<>, result_t<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for max_v<>, common_integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -22,7 +22,8 @@ namespace detail
 
     // Computes ⌊x ÷ d⌋ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
 template <typename X, typename D>
-constexpr common_integral_value_type<X, D> floori(X x, D d)
+constexpr common_integral_value_type<X, D>
+floori(X x, D d)
 {
     return x - x % d;
 }
@@ -30,7 +31,8 @@ constexpr common_integral_value_type<X, D> floori(X x, D d)
 
     // Computes ⌈x ÷ d⌉ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
 template <typename EH, typename X, typename D>
-constexpr result_t<EH, common_integral_value_type<X, D>> ceili(X x, D d)
+constexpr result_t<EH, common_integral_value_type<X, D>>
+ceili(X x, D d)
 {
     using V = common_integral_value_type<X, D>;
 
@@ -52,7 +54,8 @@ constexpr result_t<EH, common_integral_value_type<X, D>> ceili(X x, D d)
 
     // Computes ⌊n ÷ d⌋ for n ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
 template <typename N, typename D>
-constexpr common_integral_value_type<N, D> ratio_floori(N n, D d)
+constexpr common_integral_value_type<N, D>
+ratio_floori(N n, D d)
 {
     return n / d;
 }
@@ -60,7 +63,8 @@ constexpr common_integral_value_type<N, D> ratio_floori(N n, D d)
 
     // Computes ⌈n ÷ d⌉ for n ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
 template <typename N, typename D>
-constexpr common_integral_value_type<N, D> ratio_ceili(N n, D d)
+constexpr common_integral_value_type<N, D>
+ratio_ceili(N n, D d)
 {
     return n != 0
         ? (n - 1) / d + 1 // overflow-safe

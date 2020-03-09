@@ -5,8 +5,8 @@
 
 #include <climits> // for CHAR_BIT
 
-#include <slowmath/detail/type_traits.hpp>    // for max_v<>, integral_value_type<>, result_t<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for max_v<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -23,7 +23,8 @@ namespace detail
 
 
 template <typename EH, typename X, typename S>
-constexpr result_t<EH, integral_value_type<X>> shift_right(X x, S s)
+constexpr result_t<EH, integral_value_type<X>>
+shift_right(X x, S s)
 {
     using V0 = integral_value_type<X>;
     using S0 = integral_value_type<S>;
@@ -34,7 +35,8 @@ constexpr result_t<EH, integral_value_type<X>> shift_right(X x, S s)
 
 
 template <typename EH, typename X, typename S>
-constexpr result_t<EH, integral_value_type<X>> shift_left(X x, S s)
+constexpr result_t<EH, integral_value_type<X>>
+shift_left(X x, S s)
 {
     using V0 = integral_value_type<X>;
     using S0 = integral_value_type<S>;

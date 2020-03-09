@@ -7,8 +7,8 @@
 
 #include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_CPP17_OR_GREATER
 
-#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -26,9 +26,11 @@ namespace detail
 
 
     // Computes ⌊√v⌋.
-    // This function is implemented with recursion, which is probably unsatisfactory for runtime performance, so we use it only internally, and only for compile-time computations.
+    // This function is implemented with recursion, which is probably unsatisfactory for runtime performance, so we use it only
+    // internally, and only for compile-time computations.
 template <typename V>
-constexpr V sqrti(V v)
+constexpr V
+sqrti(V v)
 {
     gsl_Expects(v >= 0);
 
@@ -42,7 +44,8 @@ constexpr V sqrti(V v)
 
     // Computes v².
 template <typename EH, typename V>
-constexpr integral_value_type<V> square(V v)
+constexpr integral_value_type<V>
+square(V v)
 {
     using V0 = integral_value_type<V>;
 
@@ -53,7 +56,8 @@ constexpr integral_value_type<V> square(V v)
 
 
 template <typename U>
-constexpr int bit_scan_reverse(U mask)
+constexpr int
+bit_scan_reverse(U mask)
 {
     int result = 0;
     while (mask >>= 1)
@@ -66,7 +70,8 @@ constexpr int bit_scan_reverse(U mask)
 
     // Computes bᵉ for b, e ∊ ℕ₀.
 template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi_0(B b, E e)
+constexpr result_t<EH, integral_value_type<B>>
+powi_0(B b, E e)
 {
     using V = integral_value_type<B>;
     using E0 = integral_value_type<E>;
@@ -88,7 +93,8 @@ constexpr result_t<EH, integral_value_type<B>> powi_0(B b, E e)
     return EH::make_result(V(cb));
 }
 template <typename EH, typename B, typename E>
-constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
+constexpr result_t<EH, integral_value_type<B>>
+powi(B b, E e)
 {
     using V = integral_value_type<B>;
     using U = std::make_unsigned_t<V>;
@@ -113,7 +119,8 @@ constexpr result_t<EH, integral_value_type<B>> powi(B b, E e)
 
     // Computes ⌊log x ÷ log b⌋ for x,b ∊ ℕ, x > 0, b > 1.
 template <typename E, typename X, typename B>
-constexpr E log_floori(X x, B b)
+constexpr E
+log_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
@@ -144,7 +151,8 @@ constexpr E log_floori(X x, B b)
 
     // Computes ⌈log x ÷ log b⌉ for x,b ∊ ℕ, x > 0, b > 1.
 template <typename E, typename X, typename B>
-constexpr E log_ceili(X x, B b)
+constexpr E
+log_ceili(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 

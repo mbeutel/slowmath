@@ -3,9 +3,9 @@
 #define INCLUDED_SLOWMATH_DETAIL_FACTORIZE_HPP_
 
 
-#include <slowmath/detail/arithmetic.hpp>     // for multiply<>()
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK(), try_error_handler
-#include <slowmath/detail/type_traits.hpp>    // for max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/arithmetic.hpp>  // for multiply<>()
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK(), try_error_handler
+#include <slowmath/detail/type_traits.hpp> // for max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -28,7 +28,8 @@ namespace detail
 
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ + r with r ≥ 0 minimal.
 template <typename E, typename X, typename B>
-constexpr factorization<common_integral_value_type<X, B>, E, 1> factorize_floori(X x, B b)
+constexpr factorization<common_integral_value_type<X, B>, E, 1>
+factorize_floori(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
@@ -75,7 +76,8 @@ constexpr factorization<common_integral_value_type<X, B>, E, 1> factorize_floori
 
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
 template <typename EH, typename E, typename X, typename B>
-constexpr result_t<EH, factorization<common_integral_value_type<X, B>, E, 1>> factorize_ceili(X x, B b)
+constexpr result_t<EH, factorization<common_integral_value_type<X, B>, E, 1>>
+factorize_ceili(X x, B b)
 {
     using V = common_integral_value_type<X, B>;
 
@@ -97,7 +99,8 @@ constexpr result_t<EH, factorization<common_integral_value_type<X, B>, E, 1>> fa
 
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal.
 template <typename E, typename X, typename A, typename B>
-constexpr factorization<common_integral_value_type<X, A, B>, E, 2> factorize_floori(X x, A a, B b)
+constexpr factorization<common_integral_value_type<X, A, B>, E, 2>
+factorize_floori(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
 
@@ -145,7 +148,8 @@ constexpr factorization<common_integral_value_type<X, A, B>, E, 2> factorize_flo
 
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
 template <typename EH, typename E, typename X, typename A, typename B>
-constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, E, 2>> factorize_ceili(X x, A a, B b)
+constexpr result_t<EH, factorization<common_integral_value_type<X, A, B>, E, 2>>
+factorize_ceili(X x, A a, B b)
 {
     using V = common_integral_value_type<X, A, B>;
 

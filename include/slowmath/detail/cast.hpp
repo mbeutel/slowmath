@@ -3,8 +3,8 @@
 #define INCLUDED_SLOWMATH_DETAIL_CAST_HPP_
 
 
-#include <slowmath/detail/type_traits.hpp>    // for have_same_signedness<>, integral_value_type<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for have_same_signedness<>, integral_value_type<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -21,7 +21,8 @@ namespace detail
 
 
 template <typename EH, typename DstT, typename SrcT>
-constexpr result_t<EH, DstT> integral_cast(SrcT src)
+constexpr result_t<EH, DstT>
+integral_cast(SrcT src)
 {
     using SrcV = integral_value_type<SrcT>;
 

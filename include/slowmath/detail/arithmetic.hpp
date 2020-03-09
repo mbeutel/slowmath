@@ -5,8 +5,8 @@
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
 
-#include <slowmath/detail/type_traits.hpp>    // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
-#include <slowmath/detail/error-handling.hpp> // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -29,12 +29,13 @@ namespace detail
 
 
 template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> absi(V v)
+constexpr result_t<EH, integral_value_type<V>>
+absi(V v)
 {
     using V0 = integral_value_type<V>;
     using S = std::make_signed_t<V0>;
 
-    if (std::is_signed<V0>::value)
+    if (std::is_signed<V0>::value) // should be `if constexpr` in C++17
     {
             // This assumes a two's complement representation.
         SLOWMATH_DETAIL_OVERFLOW_CHECK(v != min_v<V0>);
@@ -48,11 +49,12 @@ constexpr result_t<EH, integral_value_type<V>> absi(V v)
 
 
 template <typename EH, typename V>
-constexpr result_t<EH, integral_value_type<V>> negate(V v)
+constexpr result_t<EH, integral_value_type<V>>
+negate(V v)
 {
     using V0 = integral_value_type<V>;
 
-    if (std::is_signed<V0>::value)
+    if (std::is_signed<V0>::value) // should be `if constexpr` in C++17
     {
             // This assumes a two's complement representation.
         SLOWMATH_DETAIL_OVERFLOW_CHECK(v != min_v<V0>);
@@ -66,7 +68,8 @@ constexpr result_t<EH, integral_value_type<V>> negate(V v)
 
 
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_narrow(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+add_narrow(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using UV = std::make_unsigned_t<V>;
@@ -79,14 +82,15 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add_narrow(A a, B b)
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_wide(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+add_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using S = std::make_signed_t<V>;
     using U = std::make_unsigned_t<V>;
 
     V result = V(U(a) + U(b));
-    if (std::is_signed<V>::value)
+    if (std::is_signed<V>::value) // should be `if constexpr` in C++17
     {
             // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
@@ -100,17 +104,20 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add_wide(A a, B b)
     return EH::make_result(result);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::true_type /*isNarrow*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+add_0(std::true_type /*isNarrow*/, A a, B b)
 {
     return detail::add_narrow<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add_0(std::false_type /*isNarrow*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+add_0(std::false_type /*isNarrow*/, A a, B b)
 {
     return detail::add_wide<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> add(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+add(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
@@ -119,12 +126,13 @@ constexpr result_t<EH, common_integral_value_type<A, B>> add(A a, B b)
 
 
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+subtract(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using S = std::make_signed_t<V>;
 
-    if (std::is_signed<V>::value)
+    if (std::is_signed<V>::value) // should be `if constexpr` in C++17
     {
             // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
@@ -140,7 +148,8 @@ constexpr result_t<EH, common_integral_value_type<A, B>> subtract(A a, B b)
 
 
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+multiply_narrow(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using UV = std::make_unsigned_t<V>;
@@ -153,12 +162,13 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply_narrow(A a, B 
     return EH::make_result(V(result));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+multiply_wide(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
     using S = std::make_signed_t<V>;
 
-    if (std::is_signed<V>::value)
+    if (std::is_signed<V>::value) // should be `if constexpr` in C++17
     {
             // cast to signed to avoid warning about pointless unsigned comparison
         SLOWMATH_DETAIL_OVERFLOW_CHECK(
@@ -172,17 +182,20 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply_wide(A a, B b)
     return EH::make_result(V(a * b));
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::true_type /*isNarrow*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+multiply_0(std::true_type /*isNarrow*/, A a, B b)
 {
     return detail::multiply_narrow<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply_0(std::false_type /*isNarrow*/, A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+multiply_0(std::false_type /*isNarrow*/, A a, B b)
 {
     return detail::multiply_wide<EH>(a, b);
 }
 template <typename EH, typename A, typename B>
-constexpr result_t<EH, common_integral_value_type<A, B>> multiply(A a, B b)
+constexpr result_t<EH, common_integral_value_type<A, B>>
+multiply(A a, B b)
 {
     using V = common_integral_value_type<A, B>;
 
@@ -191,11 +204,12 @@ constexpr result_t<EH, common_integral_value_type<A, B>> multiply(A a, B b)
 
 
 template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
+constexpr result_t<EH, common_integral_value_type<N, D>>
+divide(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    if (std::is_signed<V>::value)
+    if (std::is_signed<V>::value) // should be `if constexpr` in C++17
     {
         SLOWMATH_DETAIL_OVERFLOW_CHECK(!(n == min_v<V> && d == -1));
     }
@@ -204,11 +218,12 @@ constexpr result_t<EH, common_integral_value_type<N, D>> divide(N n, D d)
 
 
 template <typename EH, typename N, typename D>
-constexpr result_t<EH, common_integral_value_type<N, D>> modulo(N n, D d)
+constexpr result_t<EH, common_integral_value_type<N, D>>
+modulo(N n, D d)
 {
     using V = common_integral_value_type<N, D>;
 
-    if (std::is_signed<V>::value)
+    if (std::is_signed<V>::value) // should be `if constexpr` in C++17
     {
         SLOWMATH_DETAIL_OVERFLOW_CHECK(!(n == min_v<V> && d == -1));
     }
