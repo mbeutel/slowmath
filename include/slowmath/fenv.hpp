@@ -16,18 +16,6 @@ namespace gsl = ::gsl_lite;
 
 
     //
-    // Defines error codes reported by `fe_get_trapping_exceptions()` and `fe_set_trapping_exceptions()`.
-    //
-enum class fe_errc : int
-{
-        //
-        // Indicates that an unknown error occurred when interacting with the floating-point environment.
-        //
-    unknown
-};
-
-
-    //
     // Sets hardware exception traps for the floating-point exceptions specified by the given mask value.
     //ᅟ
     // The admissible mask values are defined as `FE_*` in standard header <cfenv>.
@@ -50,18 +38,18 @@ fe_set_trapping_exceptions(int excepts)
     using detail::fedisableexcept;
 # endif // __APPLE__
     int flags = fegetexcept();
-    if (flags == -1) throw std::system_error(std::error_code(fe_errc::unknown), "fegetexcept() call failed");
+    if (flags == -1) throw std::runtime_error("fegetexcept() call failed");
     int exceptsToEnable = excepts & ~(flags & FE_ALL_EXCEPT);
     int exceptsToDisable = ~excepts & (flags & FE_ALL_EXCEPT);
     if (exceptsToEnable != 0)
     {
         int result = feenableexcept(exceptsToEnable);
-        if (result == -1) throw std::system_error(std::error_code(fe_errc::unknown), "feenableexcept() call failed");
+        if (result == -1) throw std::runtime_error("feenableexcept() call failed");
     }
     if (exceptsToDisable != 0)
     {
         int result = fedisableexcept(exceptsToDisable);
-        if (result == -1) throw std::system_error(std::error_code(fe_errc::unknown), "fedisableexcept() call failed");
+        if (result == -1) throw std::runtime_error("fedisableexcept() call failed");
     }
 #else
  #error Unsupported operating system.
@@ -85,7 +73,7 @@ fe_get_trapping_exceptions(void)
     using detail::fegetexcept;
 # endif // __APPLE__
     int flags = fegetexcept();
-    if (flags == -1) throw std::system_error(std::error_code(fe_errc::unknown), "fegetexcept() call failed");
+    if (flags == -1) throw std::runtime_error("fegetexcept() call failed");
     return flags & FE_ALL_EXCEPT;
 #else
  #error Unsupported operating system.

@@ -3,9 +3,7 @@
 #define INCLUDED_SLOWMATH_DETAIL_FENV_HPP_
 
 
-#include <cfenv>        // for FE_*
-#include <type_traits>  // for integral_constant<>
-#include <system_error> // for is_error_code_enum<>
+#include <cfenv> // for FE_*
 
 #if defined(__APPLE__) && defined(__MACH__) && (defined(__i386__) || defined(__x86_64__))
 # define SLOWMATH_DETAIL_APPLE_INTEL
@@ -23,10 +21,6 @@
 
 
 namespace slowmath {
-
-
-enum class fe_errc : int;
-
 
 namespace detail {
 
@@ -98,16 +92,6 @@ fedisableexcept(int excepts)
 } // namespace detail
 
 } // namespace slowmath
-
-
-namespace std {
-
-
-template <>
-struct is_error_code_enum<slowmath::fe_errc> : std::true_type { };
-
-
-} // namespace std
 
 
 #endif // INCLUDED_SLOWMATH_DETAIL_FENV_HPP_
