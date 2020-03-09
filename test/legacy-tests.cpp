@@ -26,19 +26,15 @@ using std::size_t;
 
 
 const volatile uint8_t u8 = std::numeric_limits<uint8_t>::max() - 1;
-const volatile uint16_t u16 = std::numeric_limits<uint16_t>::max() - 1;
 const volatile uint64_t u64 = std::numeric_limits<uint64_t>::max() - 1;
 const volatile int8_t i8n = std::numeric_limits<int8_t>::min() + 1;
 const volatile int8_t i8nm = std::numeric_limits<int8_t>::min();
-const volatile int16_t i16n = std::numeric_limits<int16_t>::min() + 1;
 const volatile int64_t i64n = std::numeric_limits<int64_t>::min() + 1;
 const volatile int8_t i8p = std::numeric_limits<int8_t>::max() - 1;
-const volatile int16_t i16p = std::numeric_limits<int16_t>::max() - 1;
 const volatile int64_t i64p = std::numeric_limits<int64_t>::max() - 1;
 const volatile uint8_t zu8 = 0;
 const volatile uint64_t zu64 = 0;
 const volatile int8_t zi8 = 0;
-const volatile int64_t zi64 = 0;
 
 const volatile size_t smax = std::numeric_limits<size_t>::max();
 const volatile size_t smaxlog = slowmath::log_floori<size_t>(smax, size_t(2));
@@ -47,7 +43,7 @@ const volatile int imin = std::numeric_limits<int>::min(),
 const volatile int imaxlog = slowmath::log_floori<int>(imax, 2);
 const volatile int iminlog = slowmath::log_floori<int>(imin / -2, 2) + 1;
 const volatile int64_t lmin = std::numeric_limits<int64_t>::min(),
-                         lmax = std::numeric_limits<int64_t>::max();
+                       lmax = std::numeric_limits<int64_t>::max();
 const volatile int64_t lmaxlog = slowmath::log_floori<int64_t>(lmax, int64_t(2));
 const volatile int64_t lminlog = slowmath::log_floori<int64_t>(lmin / -2, int64_t(2)) + 1;
 
@@ -301,62 +297,5 @@ TEST_CASE("arithmetic")
         CHECK(slowmath::ceili(2u, 3u) == 3u);
         CHECK(slowmath::ceili(3u, 3u) == 3u);
         CHECK(slowmath::ceili(4u, 3u) == 6u);
-    }
-}
-
-
-TEST_CASE("integral_cast<>()")
-{
-    SECTION("pass")
-    {
-        volatile uint8_t lu8;
-        volatile uint16_t lu16;
-        volatile int8_t li8;
-        volatile int16_t li16;
-
-            // uint <-> uint
-        CHECK_NOTHROW((lu16 = slowmath::integral_cast<uint16_t>( uint8_t( u8)))); REQUIRE(lu16 == u8);
-        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>( uint8_t( u8)))); REQUIRE( lu8 == u8);
-        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>(uint16_t( u8)))); REQUIRE( lu8 == u8);
-
-            // int <-> int
-        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>(  int8_t(i8n)))); REQUIRE(li16 == i8n);
-        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>(  int8_t(i8p)))); REQUIRE(li16 == i8p);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(  int8_t(i8n)))); REQUIRE( li8 == i8n);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(  int8_t(i8p)))); REQUIRE( li8 == i8p);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i8n)))); REQUIRE( li8 == i8n);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i8p)))); REQUIRE( li8 == i8p);
-
-            // uint <-> int
-        CHECK_NOTHROW((lu16 = slowmath::integral_cast<uint16_t>(  int8_t(i8p)))); REQUIRE(lu16 == i8p);
-        CHECK_NOTHROW((li16 = slowmath::integral_cast< int16_t>( uint8_t(i8p)))); REQUIRE(li16 == i8p);
-        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>(  int8_t(i8p)))); REQUIRE( lu8 == i8p);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>( uint8_t(i8p)))); REQUIRE( li8 == i8p);
-        CHECK_NOTHROW(( lu8 = slowmath::integral_cast< uint8_t>( int16_t(i8p)))); REQUIRE( lu8 == i8p);
-        CHECK_NOTHROW(( li8 = slowmath::integral_cast<  int8_t>(uint16_t(i8p)))); REQUIRE( li8 == i8p);
-    }
-
-    SECTION("fail")
-    {
-        volatile uint8_t lu8;
-        volatile uint16_t lu16;
-        volatile int8_t li8;
-
-            // uint <-> uint
-        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast< uint8_t>(uint16_t(u16))), std::system_error);
-
-            // int <-> int
-        CHECK_THROWS_AS(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i16n))), std::system_error);
-        CHECK_THROWS_AS(( li8 = slowmath::integral_cast<  int8_t>( int16_t(i16p))), std::system_error);
-
-            // uint <-> int
-        CHECK_THROWS_AS((lu16 = slowmath::integral_cast<uint16_t>(  int8_t( i8n))), std::system_error);
-        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast< uint8_t>(  int8_t( i8n))), std::system_error);
-        CHECK_THROWS_AS(( li8 = slowmath::integral_cast<  int8_t>( uint8_t( u8 ))), std::system_error);
-        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast< uint8_t>( int16_t( i8n))), std::system_error);
-        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast< uint8_t>( int16_t(i16n))), std::system_error);
-        CHECK_THROWS_AS(( lu8 = slowmath::integral_cast< uint8_t>( int16_t(i16p))), std::system_error);
-        CHECK_THROWS_AS(( li8 = slowmath::integral_cast<  int8_t>(uint16_t( u8 ))), std::system_error);
-        CHECK_THROWS_AS(( li8 = slowmath::integral_cast<  int8_t>(uint16_t(u16 ))), std::system_error);
     }
 }

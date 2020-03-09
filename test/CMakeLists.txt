@@ -63,7 +63,6 @@ add_executable(test-slowmath-cxx14
     "legacy-tests.cpp"
     "test-arithmetic.cpp"
     "test-bits.cpp"
-    "test-cast.cpp"
     "test-factorize.cpp"
     "test-gcd-lcm.cpp"
     "test-pow-log.cpp"

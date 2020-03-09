@@ -17,7 +17,6 @@
 #include <slowmath/detail/pow-log.hpp>     // for square(), powi(), log_floori(), log_ceili()
 #include <slowmath/detail/round.hpp>       // for floori(), ceili(), ratio_floori(), ratio_ceili()
 #include <slowmath/detail/factorize.hpp>   // for factorize_floori(), factorize_ceili()
-#include <slowmath/detail/cast.hpp>        // for integral_cast<>()
 
 
 namespace slowmath
@@ -1007,51 +1006,6 @@ lcm(A a, B b)
 }
 # endif // gsl_HAVE_EXCEPTIONS
 #endif // gsl_CPP17_OR_GREATER
-
-
-    //
-    // Casts the given integer value to `DstT`.
-    //ᅟ
-    // Uses `gsl_Expects()` to raise error if the value cannot be represented in the target type.
-    //
-template <typename DstT, typename SrcT>
-gsl_NODISCARD constexpr DstT
-integral_cast_failfast(SrcT src)
-{
-    static_assert(detail::are_value_types_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be integral types or std::integral_constant<> of integral types");
-
-    return detail::integral_cast<detail::failfast_error_handler, DstT>(src);
-}
-
-    //
-    // Casts the given integer value to `DstT`.
-    //ᅟ
-    // Returns error code `std::errc::value_too_large` if the value cannot be represented in the target type.
-    //
-template <typename DstT, typename SrcT>
-gsl_NODISCARD constexpr arithmetic_result<DstT>
-try_integral_cast(SrcT src)
-{
-    static_assert(detail::are_value_types_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be integral types or std::integral_constant<> of integral types");
-
-    return detail::integral_cast<detail::try_error_handler, DstT>(src);
-}
-
-#if gsl_HAVE_EXCEPTIONS
-    //
-    // Casts the given integer value to `DstT`.
-    //ᅟ
-    // Throws `std::system_error` if the value cannot be represented in the target type.
-    //
-template <typename DstT, typename SrcT>
-gsl_NODISCARD constexpr DstT
-integral_cast(SrcT src)
-{
-    static_assert(detail::are_value_types_integral_arithmetic_types_v<DstT, SrcT>, "arguments must be integral types or std::integral_constant<> of integral types");
-
-    return detail::integral_cast<detail::throw_error_handler, DstT>(src);
-}
-#endif // gsl_HAVE_EXCEPTIONS
 
 
 } // namespace slowmath
