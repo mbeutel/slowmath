@@ -19,8 +19,7 @@
 #include <slowmath/detail/factorize.hpp>   // for factorize_floori(), factorize_ceili()
 
 
-namespace slowmath
-{
+namespace slowmath {
 
 
 namespace gsl = ::gsl_lite;
@@ -76,8 +75,20 @@ struct arithmetic_result
 
     //
     // Computes |v|.
+    //
+template <typename V>
+gsl_NODISCARD constexpr detail::integral_value_type<V>
+absi(V v)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
+
+    return detail::absi<detail::ignore_error_handler>(v);
+}
+
+    //
+    // Computes |v|.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon underflow.
+    // Uses `gsl_Expects()` to raise error upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
@@ -91,7 +102,7 @@ absi_failfast(V v)
     //
     // Computes |v|.
     //ᅟ
-    // Returns error code `std::errc::value_too_large` upon underflow.
+    // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr arithmetic_result<detail::integral_value_type<V>>
@@ -106,11 +117,11 @@ try_absi(V v)
     //
     // Computes |v|.
     //ᅟ
-    // Throws `std::system_error` upon underflow.
+    // Throws `std::system_error` upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
-absi(V v)
+absi_checked(V v)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
 
@@ -122,7 +133,7 @@ absi(V v)
     //
     // Computes -v.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon underflow.
+    // Uses `gsl_Expects()` to raise error upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
@@ -136,7 +147,7 @@ negate_failfast(V v)
     //
     // Computes -v.
     //ᅟ
-    // Returns error code `std::errc::value_too_large` upon underflow.
+    // Returns error code `std::errc::value_too_large` upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr arithmetic_result<detail::integral_value_type<V>>
@@ -151,11 +162,11 @@ try_negate(V v)
     //
     // Computes -v.
     //ᅟ
-    // Throws `std::system_error` upon underflow.
+    // Throws `std::system_error` upon overflow.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
-negate(V v)
+negate_checked(V v)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
 
@@ -202,7 +213,7 @@ try_add(A a, B b)
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
-add(A a, B b)
+add_checked(A a, B b)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<A, B>, "argument types must have identical signedness");
@@ -250,7 +261,7 @@ try_subtract(A a, B b)
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
-subtract(A a, B b)
+subtract_checked(A a, B b)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<A, B>, "argument types must have identical signedness");
@@ -298,7 +309,7 @@ try_multiply(A a, B b)
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
-multiply(A a, B b)
+multiply_checked(A a, B b)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<A, B>, "argument types must have identical signedness");
@@ -307,6 +318,23 @@ multiply(A a, B b)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes n ÷ d for d ≠ 0.
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename N, typename D>
+gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
+divide(N n, D d)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<N, D>, "arguments must be integral types or std::integral_constant<> of integral types");
+    static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
+
+    gsl_Expects(d != 0);
+
+    return detail::divide<detail::ignore_error_handler>(n, d);
+}
 
     //
     // Computes n ÷ d for d ≠ 0.
@@ -350,7 +378,7 @@ try_divide(N n, D d)
     //
 template <typename N, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
-divide(N n, D d)
+divide_checked(N n, D d)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<N, D>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
@@ -361,6 +389,23 @@ divide(N n, D d)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes n mod d for d ≠ 0.
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename N, typename D>
+gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
+modulo(N n, D d)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<N, D>, "arguments must be integral types or std::integral_constant<> of integral types");
+    static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
+
+    gsl_Expects(d != 0);
+
+    return detail::modulo<detail::ignore_error_handler>(n, d);
+}
 
     //
     // Computes n mod d for d ≠ 0.
@@ -404,7 +449,7 @@ try_modulo(N n, D d)
     //
 template <typename N, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
-modulo(N n, D d)
+modulo_checked(N n, D d)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<N, D>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<N, D>, "argument types must have identical signedness");
@@ -415,6 +460,18 @@ modulo(N n, D d)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes a ∙ b.
+    //
+template <typename V>
+gsl_NODISCARD constexpr detail::integral_value_type<V>
+square(V v)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "arguments must be integral types or std::integral_constant<> of integral types");
+
+    return detail::square<detail::ignore_error_handler>(v);
+}
 
     //
     // Computes a ∙ b.
@@ -452,7 +509,7 @@ try_square(V v)
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
-square(V v)
+square_checked(V v)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<V>, "argument must be an integral type or an std::integral_constant<> of an integral type");
 
@@ -460,6 +517,22 @@ square(V v)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename X, typename S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
+shift_left(X x, S s)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
+
+    gsl_Expects(x >= 0 && s >= 0);
+
+    return detail::shift_left<detail::ignore_error_handler>(x, s);
+}
 
     //
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
@@ -501,7 +574,7 @@ try_shift_left(X x, S s)
     //
 template <typename X, typename S>
 gsl_NODISCARD constexpr detail::integral_value_type<X>
-shift_left(X x, S s)
+shift_left_checked(X x, S s)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
@@ -511,6 +584,22 @@ shift_left(X x, S s)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename X, typename S>
+gsl_NODISCARD constexpr detail::integral_value_type<X>
+shift_right(X x, S s)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
+
+    gsl_Expects(x >= 0 && s >= 0);
+
+    return detail::shift_right<detail::ignore_error_handler>(x, s);
+}
 
     //
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
@@ -552,7 +641,7 @@ try_shift_right(X x, S s)
     //
 template <typename X, typename S>
 gsl_NODISCARD constexpr detail::integral_value_type<X>
-shift_right(X x, S s)
+shift_right_checked(X x, S s)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, S>, "arguments must be integral types or std::integral_constant<> of integral types");
 
@@ -562,6 +651,22 @@ shift_right(X x, S s)
 }
 #endif // gsl_HAVE_EXCEPTIONS
 
+
+    //
+    // Computes bᵉ for e ∊ ℕ₀.
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename B, typename E>
+gsl_NODISCARD constexpr detail::integral_value_type<B>
+powi(B b, E e)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<B, E>, "arguments must be integral types or std::integral_constant<> of integral types");
+
+    gsl_Expects(e >= 0);
+
+    return detail::powi<detail::ignore_error_handler>(b, e);
+}
 
     //
     // Computes bᵉ for e ∊ ℕ₀.
@@ -603,7 +708,7 @@ try_powi(B b, E e)
     //
 template <typename B, typename E>
 gsl_NODISCARD constexpr detail::integral_value_type<B>
-powi(B b, E e)
+powi_checked(B b, E e)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<B, E>, "arguments must be integral types or std::integral_constant<> of integral types");
 
@@ -631,6 +736,23 @@ floori(X x, D d)
     return detail::floori(x, d);
 }
 
+
+    //
+    // Computes ⌈x ÷ d⌉ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename X, typename D>
+gsl_NODISCARD constexpr detail::common_integral_value_type<X, D>
+ceili(X x, D d)
+{
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, D>, "arguments must be integral types or std::integral_constant<> of integral types");
+    static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
+
+    gsl_Expects(x >= 0 && d > 0);
+
+    return detail::ceili<detail::ignore_error_handler>(x, d);
+}
 
     //
     // Computes ⌈x ÷ d⌉ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
@@ -674,7 +796,7 @@ try_ceili(X x, D d)
     //
 template <typename X, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<X, D>
-ceili(X x, D d)
+ceili_checked(X x, D d)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, D>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<X, D>, "argument types must have identical signedness");
@@ -780,6 +902,24 @@ factorize_floori(X x, B b)
     //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
     //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename E, typename X, typename B>
+gsl_NODISCARD constexpr factorization<detail::integral_value_type<X>, E, 1>
+factorize_ceili(X x, B b)
+{
+    static_assert(detail::are_integral_arithmetic_types_v<E>, "result type must be an integral type");
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, B>, "arguments must be integral types or std::integral_constant<> of integral types");
+    static_assert(detail::have_same_signedness_v<X, B>, "argument types must have identical signedness");
+
+    gsl_Expects(x > 0 && b > 1);
+
+    return detail::factorize_ceili<detail::ignore_error_handler, E>(x, b);
+}
+
+    //
+    // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
+    //ᅟ
     // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
     //
 template <typename E, typename X, typename B>
@@ -821,7 +961,7 @@ try_factorize_ceili(X x, B b)
     //
 template <typename E, typename X, typename B>
 gsl_NODISCARD constexpr factorization<detail::integral_value_type<X>, E, 1>
-factorize_ceili(X x, B b)
+factorize_ceili_checked(X x, B b)
 {
     static_assert(detail::are_integral_arithmetic_types_v<E>, "result type must be an integral type");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, B>, "arguments must be integral types or std::integral_constant<> of integral types");
@@ -852,6 +992,24 @@ factorize_floori(X x, A a, B b)
     return detail::factorize_floori<detail::integral_value_type<X>, E>(x, a, b);
 }
 
+
+    //
+    // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
+    //ᅟ
+    // Enforces preconditions with `gsl_Expects()`.
+    //
+template <typename E, typename X, typename A, typename B>
+gsl_NODISCARD constexpr factorization<detail::common_integral_value_type<X, A, B>, E, 2>
+factorize_ceili(X x, A a, B b)
+{
+    static_assert(detail::are_integral_arithmetic_types_v<E>, "result type must be an integral type");
+    static_assert(detail::are_value_types_integral_arithmetic_types_v<X, A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
+    static_assert(detail::have_same_signedness_v<X, A, B>, "argument types must have identical signedness");
+
+    gsl_Expects(x > 0 && a > 1 && b > 1 && a != b);
+
+    return detail::factorize_ceili<detail::ignore_error_handler, E>(x, a, b);
+}
 
     //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
@@ -897,7 +1055,7 @@ try_factorize_ceili(X x, A a, B b)
     //
 template <typename E, typename X, typename A, typename B>
 gsl_NODISCARD constexpr factorization<detail::common_integral_value_type<X, A, B>, E, 2>
-factorize_ceili(X x, A a, B b)
+factorize_ceili_checked(X x, A a, B b)
 {
     static_assert(detail::are_integral_arithmetic_types_v<E>, "result type must be an integral type");
     static_assert(detail::are_value_types_integral_arithmetic_types_v<X, A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
@@ -949,7 +1107,7 @@ try_gcd(A a, B b)
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
-gcd(A a, B b)
+gcd_checked(A a, B b)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<A, B>, "argument types must have identical signedness");
@@ -997,7 +1155,7 @@ try_lcm(A a, B b)
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
-lcm(A a, B b)
+lcm_checked(A a, B b)
 {
     static_assert(detail::are_value_types_integral_arithmetic_types_v<A, B>, "arguments must be integral types or std::integral_constant<> of integral types");
     static_assert(detail::have_same_signedness_v<A, B>, "argument types must have identical signedness");

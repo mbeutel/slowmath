@@ -24,7 +24,7 @@ TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili() for signed 
         CAPTURE(d);
 
         CHECK_THROWS(slowmath::floori(n, d));
-        CHECK_THROWS(slowmath::ceili(n, d));
+        CHECK_THROWS(slowmath::ceili_checked(n, d));
         CHECK_THROWS(slowmath::ratio_floori(n, d));
         CHECK_THROWS(slowmath::ratio_ceili(n, d));
     }
@@ -50,7 +50,7 @@ TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili()", "[round]"
         CAPTURE(d);
 
         CHECK_THROWS(slowmath::floori(n, d));
-        CHECK_THROWS(slowmath::ceili(n, d));
+        CHECK_THROWS(slowmath::ceili_checked(n, d));
         CHECK_THROWS(slowmath::ratio_floori(n, d));
         CHECK_THROWS(slowmath::ratio_ceili(n, d));
     }
@@ -64,7 +64,7 @@ TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili()", "[round]"
         CAPTURE(d);
 
         CHECK(slowmath::floori(n, d) == n / d * d);
-        CHECK(slowmath::ceili(n, d) == (n + d - 1) / d * d);
+        CHECK(slowmath::ceili_checked(n, d) == (n + d - 1) / d * d);
         CHECK(slowmath::ratio_floori(n, d) == n / d);
         CHECK(slowmath::ratio_ceili(n, d) == (n + d - 1) / d);
     }
@@ -80,6 +80,6 @@ TEMPLATE_TEST_CASE("floori(), ceili(), ratio_floori(), ratio_ceili()", "[round]"
     SECTION("throws on integer overflow")
     {
         static_assert(iMax % 2 != 0, "iMax must be odd in a two's complement representation");
-        CHECK_THROWS(slowmath::ceili(iMax, TestType(2)));
+        CHECK_THROWS(slowmath::ceili_checked(iMax, TestType(2)));
     }
 }

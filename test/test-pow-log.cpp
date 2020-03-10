@@ -50,7 +50,7 @@ TEMPLATE_TEST_CASE("square()", "[arithmetic]", int)
 
         CAPTURE(x);
 
-        auto sqrX = slowmath::square(x);
+        auto sqrX = slowmath::square_checked(x);
         CHECK(sqrX == x*x);
     }
 
@@ -60,7 +60,7 @@ TEMPLATE_TEST_CASE("square()", "[arithmetic]", int)
 
         CAPTURE(x);
 
-        CHECK_THROWS(slowmath::square(x));
+        CHECK_THROWS(slowmath::square_checked(x));
     }
 }
 

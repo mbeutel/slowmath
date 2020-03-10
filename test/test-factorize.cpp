@@ -32,7 +32,7 @@ TEMPLATE_TEST_CASE("factorize_floori(), factorize_ceili()", "[factorize]", int)
         CAPTURE(b);
 
         CHECK(slowmath::factorize_floori<int>(x, a, b) == slowmath::factorization<TestType, int, 2>{ floorR, floorExpA, floorExpB });
-        CHECK(slowmath::factorize_ceili<int>(x, a, b) == slowmath::factorization<TestType, int, 2>{ ceilR, ceilExpA, ceilExpB });
+        CHECK(slowmath::factorize_ceili_checked<int>(x, a, b) == slowmath::factorization<TestType, int, 2>{ ceilR, ceilExpA, ceilExpB });
     }
 
     // TODO: add borderline and overflow tests

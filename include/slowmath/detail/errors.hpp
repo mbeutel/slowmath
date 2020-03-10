@@ -89,6 +89,46 @@ struct errc_wildcard_t
     }
 };
 
+struct ignore_error_handler
+{
+    template <typename T> using result = T;
+
+    template <typename T>
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE T
+    make_result(T value) noexcept
+    {
+        return value;
+    }
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE std::true_type
+    check(bool)
+    {
+        return { };
+    }
+    static inline unreachable_wildcard_t
+    make_error(std::errc)
+    {
+        std::terminate();
+    }
+    template <typename T>
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE T
+    get_value(T result) noexcept
+    {
+        return result;
+    }
+    template <typename T>
+    static constexpr SLOWMATH_DETAIL_FORCEINLINE std::false_type
+    is_error(T) noexcept
+    {
+        return { };
+    }
+    template <typename T>
+    static SLOWMATH_DETAIL_FORCEINLINE unreachable_wildcard_t
+    passthrough_error(T)
+    {
+        gsl_Expects(false);
+    }
+};
+
 struct failfast_error_handler
 {
     template <typename T> using result = T;

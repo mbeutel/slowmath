@@ -1,10 +1,19 @@
 ﻿
 #include <tuple>
+#include <limits>
 
 #include <catch2/catch.hpp>
 
 #include <slowmath/arithmetic.hpp>
 
+
+TEST_CASE("unchecked operations tolerate unsigned overflow")
+{
+    static constexpr std::uint8_t u8m = std::numeric_limits<std::uint8_t>::max();
+    static constexpr std::uint8_t u8mSq = std::uint8_t((u8m * u8m) & 0xFF);
+    CHECK(slowmath::square(u8m) == u8mSq);
+    CHECK_THROWS_AS(slowmath::square_checked(u8m), std::system_error);
+}
 
 TEMPLATE_TEST_CASE("absi(), negate() for signed types", "[arithmetic]", std::int8_t, std::int32_t, std::int64_t)
 {
@@ -16,17 +25,17 @@ TEMPLATE_TEST_CASE("absi(), negate() for signed types", "[arithmetic]", std::int
 
         CAPTURE(x);
 
-        CHECK(slowmath::absi(x) == x);
-        CHECK(slowmath::absi(TestType(-x)) == x);
+        CHECK(slowmath::absi_checked(x) == x);
+        CHECK(slowmath::absi_checked(TestType(-x)) == x);
 
-        CHECK(slowmath::negate(x) == -x);
-        CHECK(slowmath::negate(TestType(-x)) == x);
+        CHECK(slowmath::negate_checked(x) == -x);
+        CHECK(slowmath::negate_checked(TestType(-x)) == x);
     }
 
     SECTION("throws on integer overflow")
     {
-        CHECK_THROWS_AS(slowmath::absi(iMin), std::system_error);
-        CHECK_THROWS_AS(slowmath::negate(iMin), std::system_error);
+        CHECK_THROWS_AS(slowmath::absi_checked(iMin), std::system_error);
+        CHECK_THROWS_AS(slowmath::negate_checked(iMin), std::system_error);
     }
 }
 
@@ -34,8 +43,8 @@ TEMPLATE_TEST_CASE("absi(), negate() for unsigned types", "[arithmetic]", std::u
 {
     SECTION("zero")
     {
-        CHECK(slowmath::absi(TestType(0)) == TestType(0));
-        CHECK(slowmath::negate(TestType(0)) == TestType(0));
+        CHECK(slowmath::absi_checked(TestType(0)) == TestType(0));
+        CHECK(slowmath::negate_checked(TestType(0)) == TestType(0));
     }
 
     SECTION("basic correctness")
@@ -44,7 +53,7 @@ TEMPLATE_TEST_CASE("absi(), negate() for unsigned types", "[arithmetic]", std::u
 
         CAPTURE(x);
 
-        CHECK(slowmath::absi(x) == x);
+        CHECK(slowmath::absi_checked(x) == x);
     }
 
     SECTION("throws on integer underflow")
@@ -53,7 +62,7 @@ TEMPLATE_TEST_CASE("absi(), negate() for unsigned types", "[arithmetic]", std::u
 
         CAPTURE(x);
 
-        CHECK_THROWS_AS(slowmath::negate(x), std::system_error);
+        CHECK_THROWS_AS(slowmath::negate_checked(x), std::system_error);
     }
 }
 
@@ -74,7 +83,7 @@ TEMPLATE_TEST_CASE("multiply() for signed types", "[arithmetic]", std::int8_t, s
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK(slowmath::multiply(a, b) == a * b);
+        CHECK(slowmath::multiply_checked(a, b) == a * b);
     }
 
     SECTION("borderline values")
@@ -96,8 +105,8 @@ TEMPLATE_TEST_CASE("multiply() for signed types", "[arithmetic]", std::int8_t, s
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK(slowmath::multiply(a, b) == a * b);
-        CHECK(slowmath::multiply(b, a) == a * b);
+        CHECK(slowmath::multiply_checked(a, b) == a * b);
+        CHECK(slowmath::multiply_checked(b, a) == a * b);
     }
 
     SECTION("throws on integer overflow")
@@ -120,8 +129,8 @@ TEMPLATE_TEST_CASE("multiply() for signed types", "[arithmetic]", std::int8_t, s
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK_THROWS(slowmath::multiply(a, b));
-        CHECK_THROWS(slowmath::multiply(b, a));
+        CHECK_THROWS(slowmath::multiply_checked(a, b));
+        CHECK_THROWS(slowmath::multiply_checked(b, a));
     }
 }
 
@@ -136,7 +145,7 @@ TEMPLATE_TEST_CASE("multiply() for unsigned types", "[arithmetic]", std::uint8_t
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK(slowmath::multiply(a, b) == a * b);
+        CHECK(slowmath::multiply_checked(a, b) == a * b);
     }
 
     SECTION("borderline values")
@@ -152,8 +161,8 @@ TEMPLATE_TEST_CASE("multiply() for unsigned types", "[arithmetic]", std::uint8_t
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK(slowmath::multiply(a, b) == a * b);
-        CHECK(slowmath::multiply(b, a) == a * b);
+        CHECK(slowmath::multiply_checked(a, b) == a * b);
+        CHECK(slowmath::multiply_checked(b, a) == a * b);
     }
 
     SECTION("throws on integer overflow")
@@ -168,8 +177,8 @@ TEMPLATE_TEST_CASE("multiply() for unsigned types", "[arithmetic]", std::uint8_t
 
         CAPTURE(a);
         CAPTURE(b);
-        CHECK_THROWS(slowmath::multiply(a, b));
-        CHECK_THROWS(slowmath::multiply(b, a));
+        CHECK_THROWS(slowmath::multiply_checked(a, b));
+        CHECK_THROWS(slowmath::multiply_checked(b, a));
     }
 }
 
