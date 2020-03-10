@@ -297,28 +297,32 @@ Header file: [`<slowmath/fenv.hpp>`](https://github.com/mbeutel/slowmath/blob/ma
 
 Functions:
 
-  ```c++
-  void fe_set_trapping_exceptions(int excepts);
-  ```
-  Sets hardware exception traps for the floating-point exceptions specified by the given mask value.
+    ---
+    
+    ```c++
+    void fe_set_trapping_exceptions(int excepts);
+    ```
+    Sets hardware exception traps for the floating-point exceptions specified by the given mask value.
+    
+    The admissible mask values are defined as [`FE_*`](https://en.cppreference.com/w/cpp/numeric/fenv/FE_exceptions) in standard
+    header [`<cfenv>`](https://en.cppreference.com/w/cpp/header/cfenv).  
+    If an exception flag bit is set, the corresponding exception will be trapped; if the bit is clear, the exception will be masked.
+    
+    ---
+    
+    ```c++
+    int fe_get_trapping_exceptions(void);
+    ```
+    Returns the bitmask of all floating-point exceptions for which trapping is currently enabled.
+    
+    The admissible mask values are defined as [`FE_*`](https://en.cppreference.com/w/cpp/numeric/fenv/FE_exceptions) in standard
+    header [`<cfenv>`](https://en.cppreference.com/w/cpp/header/cfenv).  
+    
+    ---
 
-  The admissible mask values are defined as [`FE_*`](https://en.cppreference.com/w/cpp/numeric/fenv/FE_exceptions) in standard
-  header [`<cfenv>`](https://en.cppreference.com/w/cpp/header/cfenv).  
-  If an exception flag bit is set, the corresponding exception will be trapped; if the bit is clear, the exception will be masked.
-
-  ---
-
-  ```c++
-  int fe_get_trapping_exceptions(void);
-  ```
-  Returns the bitmask of all floating-point exceptions for which trapping is currently enabled.
-
-  The admissible mask values are defined as [`FE_*`](https://en.cppreference.com/w/cpp/numeric/fenv/FE_exceptions) in standard
-  header [`<cfenv>`](https://en.cppreference.com/w/cpp/header/cfenv).  
-
-  Floating-point exceptions are usually *silent*, i.e. they only set an exception state in the floating-point unit but do not affect
-  the flow of execution. Using `fe_set_trapping_exceptions()`, the FPU can be configured to trigger a hardware exception for certain
-  floating-point exceptions, which raises a `SIGFPE` signal on POSIX platforms or a SEH exception on Windows.
+Floating-point exceptions are usually *silent*, i.e. they only set an exception state in the floating-point unit but do not affect
+the flow of execution. Using `fe_set_trapping_exceptions()`, the FPU can be configured to trigger a hardware exception for certain
+floating-point exceptions, which raises a `SIGFPE` signal on POSIX platforms or a SEH exception on Windows.
 
 Example:
 
