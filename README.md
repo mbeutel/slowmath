@@ -5,7 +5,7 @@
  [![Build Status](https://dev.azure.com/moritzbeutel/slowmath/_apis/build/status/mbeutel.slowmath?branchName=master)](https://dev.azure.com/moritzbeutel/slowmath/_build/latest?definitionId=4&branchName=master)
  [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/moritzbeutel/slowmath/4)](https://dev.azure.com/moritzbeutel/slowmath/_testManagement/runs)
 
-*slowmath* is a header-only C++ library of checked arithmetic routines.
+*slowmath* is a header-only C++ library providing checked arithmetic operations.
 
 
 ## Contents
@@ -34,30 +34,30 @@
 
 std::size_t computeBufferSize(std::size_t numElements, std::size_t elementSize)
 {
-    // throws `std::system_error(std::errc::value_too_large)` on overflow
+    // Throws `std::system_error` with `std::errc::value_too_large` on overflow.
     return slowmath::multiply_checked(numElements, elementSize);
 }
 ```
 
 ### Motivation
 
-C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) in language and standard
-library. Perhaps most notably, signed integer overflow is undefined in C++. This defeats many naïve approaches at guarding against
-overflow:
+C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) in the language and
+standard library specification. Perhaps most notably, signed integer overflow is undefined in C++. This defeats many naïve
+approaches at guarding against overflow:
 
 ```c++
 // bad code
 int faultyCheckedAdd(int a, int b)
 {
     assert(!(a > 0 && b > 0 && a + b < 0)   // Idea: if both values have equal sign, and if adding them
-        && !(a < 0 && b < 0 && a + b > 0)); //       changes the sign, the value must have overflown.
+        && !(a < 0 && b < 0 && a + b > 0)); // changes the sign, the value must have overflown.
     return a + b;
 }
 ```
 
-The author wanted to exploit the fact that most *hardware implementation* of signed integers intuitively wrap around on overflow.
-However, this doesn't work as expected: signed integer overflow is undefined, hence the compiler may legally assume it never
-happens. As a consequence, compilers may simply [elide the naïve overflow check](https://gcc.godbolt.org/z/m8ND9H):
+The author of this snippet wanted to exploit the fact that most *hardware implementation* of signed integers intuitively wrap
+around on overflow. However, this doesn't work as expected: signed integer overflow is undefined, hence the compiler may legally
+assume it never happens. As a consequence, compilers may simply [elide the naïve overflow check](https://gcc.godbolt.org/z/m8ND9H):
 
 ```asm
 faultyCheckedAdd(int, int):
@@ -117,6 +117,8 @@ Other libraries for checked arithmetic in C and C++ exist, but
 ## Reference
 
 ### Integer arithmetic
+
+Header file: [`<slowmath/arithmetic.hpp>`](https://github.com/mbeutel/slowmath/blob/master/include/slowmath/arithmetic.hpp)
 
 - [Basic arithmetic operations](#basic-arithmetic-operations): addition, subtraction, multiplication, division, modulo
 - [Extended arithmetic operations](#extended-arithmetic-operations): square, exponentiation, rounding, logarithm
@@ -203,11 +205,9 @@ Arithmetic operations with a `_failfast` suffix (e.g. `try_square()`) check thei
 
 #### Basic arithmetic operations
 
-Header file: `<slowmath/arithmetic.hpp>`
-
 | function                                                                                    | preconditions  | result     |
 | ------------------------------------------------------------------------------------------- | -------------- | ---------- |
-| `absi(a)` <br> `absi_checked(a)` <br> `absi_failfast(a)` <br> `try_absi(a)`                 | a ∊ ℤ          | |a|        |
+| `absi(a)` <br> `absi_checked(a)` <br> `absi_failfast(a)` <br> `try_absi(a)`                 | a ∊ ℤ          | \|a\|      |
 | `negate_checked(a)` <br> `negate_failfast(a)` <br> `try_negate(a)`                          | a ∊ ℤ          | -a         |
 | `add_checked(a,b)` <br> `add_failfast(a,b)` <br> `try_add(a,b)`                             | a,b ∊ ℤ        | a + b      |
 | `subtract_checked(a,b)` <br> `subtract_failfast(a,b)` <br> `try_subtract(a,b)`              | a,b ∊ ℤ        | a - b      |
@@ -218,8 +218,6 @@ Header file: `<slowmath/arithmetic.hpp>`
 The types of both arguments of each `add`, `subtract`, `multiply`, `divide`, and `modulo` operation must have identical signedness.
 
 #### Extended arithmetic operations
-
-Header file: `<slowmath/arithmetic.hpp>`
 
 | function                                                                                | preconditions          | result          |
 | --------------------------------------------------------------------------------------- | ---------------------- | --------------- |
@@ -236,8 +234,6 @@ The types of both arguments of each `floori`, `ceili`, `ratio_floori`, `ratio_ce
 have identical signedness.
 
 #### Factorization
-
-Header file: `<slowmath/arithmetic.hpp>`
 
 | function                                                                                                                                            | preconditions                    | result                                               |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------- |
@@ -259,9 +255,8 @@ struct factorization<V, E, 1>
     V remainder;
     E exponent1;
 
-        // equivalence
-    constexpr friend bool operator ==(factorization const& lhs, factorization const& rhs) noexcept;
-    constexpr friend bool operator !=(factorization const& lhs, factorization const& rhs) noexcept;
+    constexpr friend bool operator ==(factorization const&, factorization const&) noexcept;
+    constexpr friend bool operator !=(factorization const&, factorization const&) noexcept;
 };
 template <typename V, typename E>
 struct factorization<V, E, 2>
@@ -270,15 +265,12 @@ struct factorization<V, E, 2>
     E exponent1;
     E exponent2;
 
-        // equivalence
-    gsl_NODISCARD constexpr friend bool operator ==(factorization const& lhs, factorization const& rhs) noexcept;
-    gsl_NODISCARD constexpr friend bool operator !=(factorization const& lhs, factorization const& rhs) noexcept;
+    constexpr friend bool operator ==(factorization const&, factorization const&) noexcept;
+    constexpr friend bool operator !=(factorization const&, factorization const&) noexcept;
 };
 ```
 
 #### Number theory
-
-Header file: `<slowmath/arithmetic.hpp>`
 
 | function                                                                       | preconditions | result                             |
 | ------------------------------------------------------------------------------ | ------------- | ---------------------------------- |
@@ -291,8 +283,6 @@ Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and [`std::lc
 
 #### Bit operations
 
-Header file: `<slowmath/arithmetic.hpp>`
-
 | function                                                                                                              | preconditions | result                                    |
 | --------------------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------- |
 | `shift_left(x, s)` <br> `shift_left_checked(x, s)` <br> `shift_left_failfast(x, s)` <br> `try_shift_left(x, s)`       | x,s ∊ ℕ₀      | x ∙ 2ˢ (i.e. x left-shifted by s bits)    |
@@ -303,7 +293,7 @@ implementation-dependent. Unlike the built-in shift operator, `shift_right()` do
 
 ### Floating-point environment
 
-Header file: `<slowmath/fenv.hpp>`
+Header file: [`<slowmath/fenv.hpp>`](https://github.com/mbeutel/slowmath/blob/master/include/slowmath/fenv.hpp)
 
 Functions:
 
