@@ -14,7 +14,7 @@
   - [Example usage](#example-usage)
   - [Motivation](#motivation)
   - [Why *slowmath*?](#why-slowmath)
-- [Documentation](#documentation)
+- [Reference](#reference)
   - [Integer arithmetic](#integer-arithmetic)
   - [Floating-point environment](#floating-point-environment)
 - [Supported platforms](#supported-platforms)
@@ -42,7 +42,7 @@ std::size_t computeBufferSize(std::size_t numElements, std::size_t elementSize)
 ### Motivation
 
 C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) in language and standard
-library. Perhaps most notably, signed integer overflow is undefined in C++. This defeats most naïve approaches at guarding against
+library. Perhaps most notably, signed integer overflow is undefined in C++. This defeats many naïve approaches at guarding against
 overflow:
 
 ```c++
@@ -50,7 +50,7 @@ overflow:
 int faultyCheckedAdd(int a, int b)
 {
     assert(!(a > 0 && b > 0 && a + b < 0)   // Idea: if both values have equal sign, and if adding them
-        && !(a < 0 && b < 0 && a + b > 0)); // changes the sign, the value must have overflown.
+        && !(a < 0 && b < 0 && a + b > 0)); //       changes the sign, the value must have overflown.
     return a + b;
 }
 ```
@@ -76,9 +76,8 @@ Other libraries for checked arithmetic in C and C++ exist, but
 
 - **Checked aritmetic operations for the existing integer types**, not a new set of integer types with checked operations.
 
-  Wanting runtime checks for *all* arithmetic operations when running unit tests is a reasonable demand, but I recommend using
-  [UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) rather than rewriting your code to use
-  safe arithmetic everywhere.
+  Checking *all* arithmetic operations for overflow during testing is a reasonable demand, but for that I recommend using
+  [UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html).
 
   If you really want every operation to be checked even in production code, you probably want to use
   [Boost.SafeNumerics](https://github.com/boostorg/safe_numerics).
@@ -98,7 +97,8 @@ Other libraries for checked arithmetic in C and C++ exist, but
   generate efficient code for overflow checks. The most reliable way to get efficient codegen is to use
   [compiler intrinsics](https://gcc.gnu.org/onlinedocs/gcc/Integer-Overflow-Builtins.html)
   or [platform-specific libraries](https://docs.microsoft.com/en-us/windows/win32/api/intsafe/). The downside is that these are
-  not portable and typically not `constexpr`.  
+  not portable and typically not `constexpr`.
+
   *slowmath* favors portability over efficiency; we want efficient codegen where possible, but there should always be a
   portable ISO C++-compliant fallback.
 
@@ -114,19 +114,15 @@ Other libraries for checked arithmetic in C and C++ exist, but
   - `square_failfast()`: checks for overflow using `gsl_Expects()` precondition assertions
 
 
-## Documentation
-
-*slowmath* provides the following sets of functions:
-
-- [Integer arithmetic](#integer-arithmetic)
-  - [Basic arithmetic operations](#basic-arithmetic-operations): addition, subtraction, multiplication, division, modulo
-  - [Extended arithmetic operations](#extended-arithmetic-operations): square, exponentiation, rounding, logarithm
-  - [Factorization](#factorization)
-  - [Number theory](#number-theory): greatest common divisor, least common multiple
-  - [Bit operations](#bit-operations): shift left, shift right
-- [Floating-point environment](#floating-point-environment): trapping floating-point exceptions
+## Reference
 
 ### Integer arithmetic
+
+- [Basic arithmetic operations](#basic-arithmetic-operations): addition, subtraction, multiplication, division, modulo
+- [Extended arithmetic operations](#extended-arithmetic-operations): square, exponentiation, rounding, logarithm
+- [Factorization](#factorization)
+- [Number theory](#number-theory): greatest common divisor, least common multiple
+- [Bit operations](#bit-operations): shift left, shift right
 
 All integer arithmetic operations expect their arguments to be either of
 [integral type](https://en.cppreference.com/w/cpp/types/is_integral) other than `bool`, or of type
@@ -209,50 +205,50 @@ Arithmetic operations with a `_failfast` suffix (e.g. `try_square()`) check thei
 
 Header file: `<slowmath/arithmetic.hpp>`
 
-| function                                                                                              | preconditions  | result     |
-| ----------------------------------------------------------------------------------------------------- | -------------- | ---------- |
-| `absi(a)` <br> `absi_checked(a)` <br> `absi_failfast(a)` <br> `try_absi(a)`                           | a ∊ ℤ          | |a|        |
-| `negate_checked(a)` <br> `negate_failfast(a)` <br> `try_negate(a)`                                    | a ∊ ℤ          | -a         |
-| `add_checked(a, b)` <br> `add_failfast(a, b)` <br> `try_add(a, b)`                                    | a,b ∊ ℤ        | a + b      |
-| `subtract_checked(a, b)` <br> `subtract_failfast(a, b)` <br> `try_subtract(a, b)`                     | a,b ∊ ℤ        | a - b      |
-| `multiply_checked(a, b)` <br> `multiply_failfast(a, b)` <br> `try_multiply(a, b)`                     | a,b ∊ ℤ        | a ∙ b      |
-| `divide(n, d)` <br> `divide_checked(n, d)` <br> `divide_failfast(n, d)` <br> `try_divide(n, d)`       | n,d ∊ ℤ, d ≠ 0 | n ÷ d      |
-| `modulo(n, d)` <br> `modulo_checked(n, d)` <br> `modulo_failfast(n, d)` <br> `try_modulo(n, d)`       | n,d ∊ ℤ, d ≠ 0 | n mod d    |
+| function                                                                                    | preconditions  | result     |
+| ------------------------------------------------------------------------------------------- | -------------- | ---------- |
+| `absi(a)` <br> `absi_checked(a)` <br> `absi_failfast(a)` <br> `try_absi(a)`                 | a ∊ ℤ          | |a|        |
+| `negate_checked(a)` <br> `negate_failfast(a)` <br> `try_negate(a)`                          | a ∊ ℤ          | -a         |
+| `add_checked(a,b)` <br> `add_failfast(a,b)` <br> `try_add(a,b)`                             | a,b ∊ ℤ        | a + b      |
+| `subtract_checked(a,b)` <br> `subtract_failfast(a,b)` <br> `try_subtract(a,b)`              | a,b ∊ ℤ        | a - b      |
+| `multiply_checked(a,b)` <br> `multiply_failfast(a,b)` <br> `try_multiply(a,b)`              | a,b ∊ ℤ        | a ∙ b      |
+| `divide(n,d)` <br> `divide_checked(n,d)` <br> `divide_failfast(n,d)` <br> `try_divide(n,d)` | n,d ∊ ℤ, d ≠ 0 | n ÷ d      |
+| `modulo(n,d)` <br> `modulo_checked(n,d)` <br> `modulo_failfast(n,d)` <br> `try_modulo(n,d)` | n,d ∊ ℤ, d ≠ 0 | n mod d    |
 
-Both arguments of each `add`, `subtract`, `multiply`, `divide`, and `modulo` operation must have identical signedness.
+The types of both arguments of each `add`, `subtract`, `multiply`, `divide`, and `modulo` operation must have identical signedness.
 
 #### Extended arithmetic operations
 
 Header file: `<slowmath/arithmetic.hpp>`
 
-| function                                                                                            | preconditions          | result          |
-| --------------------------------------------------------------------------------------------------- | ---------------------- | --------------- |
-| `square(a)` <br> `square_checked(a)` <br> `square_failfast(a)` <br> `try_square(a)`                 | a ∊ ℤ                  | a²              |
-| `powi(b, e)` <br> `powi_checked(b, e)` <br> `powi_failfast(b, e)` <br> `try_powi(b, e)`             | b ∊ ℤ, e ∊ ℕ₀          | bᵉ              |
-| `floori(x, d)`                                                                                      | x ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌊x ÷ d⌋ ∙ d     |
-| `ceili(x, d)` <br> `ceili_checked(x, d)` <br> `ceili_failfast(x, d)` <br> `try_ceili(x, d)`         | x ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌈x ÷ d⌉ ∙ d     |
-| `ratio_floori(n, d)`                                                                                | n ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌊n ÷ d⌋         |
-| `ratio_ceili(n, d)`                                                                                 | n ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌈n ÷ d⌉         |
-| `log_floori(x, b)`                                                                                  | x,b ∊ ℕ, x > 0, b > 1  | ⌊log x ÷ log b⌋ |
-| `log_ceili(x, b)`                                                                                   | x,b ∊ ℕ, x > 0, b > 1  | ⌈log x ÷ log b⌉ |
+| function                                                                                | preconditions          | result          |
+| --------------------------------------------------------------------------------------- | ---------------------- | --------------- |
+| `square(a)` <br> `square_checked(a)` <br> `square_failfast(a)` <br> `try_square(a)`     | a ∊ ℤ                  | a²              |
+| `powi(b,e)` <br> `powi_checked(b,e)` <br> `powi_failfast(b,e)` <br> `try_powi(b,e)`     | b ∊ ℤ, e ∊ ℕ₀          | bᵉ              |
+| `floori(x,d)`                                                                           | x ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌊x ÷ d⌋ ∙ d     |
+| `ceili(x,d)` <br> `ceili_checked(x,d)` <br> `ceili_failfast(x,d)` <br> `try_ceili(x,d)` | x ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌈x ÷ d⌉ ∙ d     |
+| `ratio_floori(n,d)`                                                                     | n ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌊n ÷ d⌋         |
+| `ratio_ceili(n,d)`                                                                      | n ∊ ℕ₀, d ∊ ℕ, d ≠ 0   | ⌈n ÷ d⌉         |
+| `log_floori(x,b)`                                                                       | x,b ∊ ℕ, x > 0, b > 1  | ⌊log x ÷ log b⌋ |
+| `log_ceili(x,b)`                                                                        | x,b ∊ ℕ, x > 0, b > 1  | ⌈log x ÷ log b⌉ |
 
-Both arguments of each `floori`, `ceili`, `ratio_floori`, `ratio_ceil`, `log_floori`, and `log_ceil` operation must have identical
-signedness.
+The types of both arguments of each `floori`, `ceili`, `ratio_floori`, `ratio_ceil`, `log_floori`, and `log_ceil` operation must
+have identical signedness.
 
 #### Factorization
 
 Header file: `<slowmath/arithmetic.hpp>`
 
-| function                                                                                                                                                    | preconditions                    | result                                               |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------- |
-| `factorize_floori<E>(x, b)`                                                                                                                                 | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ + r with r ≥ 0 minimal        |
-| `factorize_ceili<E>(x, b)` <br> `factorize_ceili_checked<E>(x, b)` <br> `factorize_ceili_failfast<E>(x, b)` <br> `try_factorize_ceili<E>(x, b)`             | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ - r with r ≥ 0 minimal        |
-| `factorize_floori<E>(x, a, b)`                                                                                                                              | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal |
-| `factorize_ceili<E>(x, a, b)` <br> `factorize_ceili_checked<E>(x, a, b)` <br> `factorize_ceili_failfast<E>(x, a, b)` <br> `try_factorize_ceili<E>(x, a, b)` | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal |
+| function                                                                                                                                            | preconditions                    | result                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------- |
+| `factorize_floori<E>(x,b)`                                                                                                                          | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ + r with r ≥ 0 minimal        |
+| `factorize_ceili<E>(x,b)` <br> `factorize_ceili_checked<E>(x,b)` <br> `factorize_ceili_failfast<E>(x,b)` <br> `try_factorize_ceili<E>(x,b)`         | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ - r with r ≥ 0 minimal        |
+| `factorize_floori<E>(x,a,b)`                                                                                                                        | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal |
+| `factorize_ceili<E>(x,a,b)` <br> `factorize_ceili_checked<E>(x,a,b)` <br> `factorize_ceili_failfast<E>(x,a,b)` <br> `try_factorize_ceili<E>(x,a,b)` | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal |
 
-All function arguments of each `factorize_floori` and `factorize_ceili` operation must have identical signedness.
+The types of all function arguments of each `factorize_floori` and `factorize_ceili` operation must have identical signedness.
 
-Factorization functions require a template type argument that indicates which type to use to store factor exponents. They return
+Factorization functions require a template type argument `E` that indicates which type to use to store factor exponents. They return
 a value of the aggregate type `slowmath::factorization<V, E, N>` defined as
 ```c++
 template <typename V, typename E, int NumFactors>
@@ -305,13 +301,12 @@ Header file: `<slowmath/arithmetic.hpp>`
 **Note:** The result of right-shifting negative numbers with the built-in arithmetic shift operator is valid but
 implementation-dependent. Unlike the built-in shift operator, `shift_right()` does not support negative operands.
 
-#### Floating-point environment
+### Floating-point environment
 
 Header file: `<slowmath/fenv.hpp>`
 
 - ```c++
-  void
-  fe_set_trapping_exceptions(int excepts);
+  void fe_set_trapping_exceptions(int excepts);
   ```
 
   Sets hardware exception traps for the floating-point exceptions specified by the given mask value.
@@ -321,8 +316,7 @@ Header file: `<slowmath/fenv.hpp>`
   If an exception flag bit is set, the corresponding exception will be trapped; if the bit is clear, the exception will be masked.
 
 - ```c++
-  int
-  fe_get_trapping_exceptions(void);
+  int fe_get_trapping_exceptions(void);
   ```
   Returns the bitmask of all floating-point exceptions for which trapping is currently enabled.
  
@@ -397,13 +391,13 @@ add_executable(my_proj "main.cpp")
 target_link_libraries(my_proj PRIVATE slowmath::slowmath)
 ```
 
-*slowmath* is most easily installed with [Vcpkg](https://github.com/microsoft/vcpkg/):
+The library is most easily installed with [Vcpkg](https://github.com/microsoft/vcpkg/):
 
 ```
 vcpkg install slowmath
 ```
 
-*slowmath* can also be configured manually:
+It can also be configured manually:
 
 ```
 git clone git@github.com:mbeutel/slowmath.git
@@ -427,8 +421,9 @@ line when configuring your project with CMake.
 
 [1] [SEI CERT C Coding Standard, Rule 04. Integers (INT)](https://wiki.sei.cmu.edu/confluence/x/tNUxBQ). The implementation of
 *slowmath* mostly follows the techniques presented here.  
-[2] W. Dietz et al., [Understanding Integer Overflow in C/C++](http://www.cs.utah.edu/~regehr/papers/tosem15.pdf), 2015
-[3] Project Nayuki, [Undefined behavior in C and C++ programs](https://www.nayuki.io/page/undefined-behavior-in-c-and-cplusplus-programs)
+[2] W. Dietz et al., [Understanding Integer Overflow in C/C++](http://www.cs.utah.edu/~regehr/papers/tosem15.pdf), 2015  
+[3] cppreference.com, [Undefined behavior](https://en.cppreference.com/w/cpp/language/ub)  
+[4] Project Nayuki, [Undefined behavior in C and C++ programs](https://www.nayuki.io/page/undefined-behavior-in-c-and-cplusplus-programs)
 
 
 ## License
