@@ -65,7 +65,7 @@ faultyCheckedAdd(int, int):
         ret
 ```
 
-The goal of this library is to provide a set of common arithmetic routines with overflow checks.
+The goal of this library is to provide a set of common arithmetic routines with safe overflow checks.
 
 ### Why *slowmath*?
 
@@ -279,7 +279,8 @@ struct factorization<V, E, 2>
 
 Both arguments of `gcd` and `lcm` must have identical signedness.
 
-Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and [`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), these functions are supported only for C++17 and higher.
+Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and
+[`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), these functions are supported only for C++17 and higher.
 
 #### Bit operations
 
@@ -294,8 +295,6 @@ implementation-dependent. Unlike the built-in shift operator, `shift_right()` do
 ### Floating-point environment
 
 Header file: [`<slowmath/fenv.hpp>`](https://github.com/mbeutel/slowmath/blob/master/include/slowmath/fenv.hpp)
-
-Functions:
 
 ---
 
