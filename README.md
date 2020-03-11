@@ -41,7 +41,7 @@ std::size_t computeBufferSize(std::size_t numElements, std::size_t elementSize)
 
 ### Motivation
 
-C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) in the language and
+C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) (UB) in the language and
 standard library specification. Perhaps most notably, signed integer overflow is undefined in C++. This defeats many naïve
 approaches at guarding against overflow:
 
@@ -55,9 +55,10 @@ int faultyCheckedAdd(int a, int b)
 }
 ```
 
-The author of this snippet wanted to exploit the fact that most *hardware implementation* of signed integers intuitively wrap
+The author of this snippet intuitively wanted to exploit the fact that most *hardware implementation* of signed integers wrap
 around on overflow. However, this doesn't work as expected: signed integer overflow is undefined, hence the compiler may legally
-assume it never happens. As a consequence, compilers may simply [elide the naïve overflow check](https://gcc.godbolt.org/z/m8ND9H):
+assume it never happens. As a consequence, some compilers will simply
+[elide the naïve overflow check](https://gcc.godbolt.org/z/m8ND9H):
 
 ```asm
 faultyCheckedAdd(int, int):
@@ -65,7 +66,7 @@ faultyCheckedAdd(int, int):
         ret
 ```
 
-The goal of this library is to provide a set of common arithmetic routines with safe overflow checks.
+The goal of this library is to provide a set of common arithmetic routines with UB-free overflow checks.
 
 ### Why *slowmath*?
 
@@ -122,8 +123,7 @@ Header file: [`<slowmath/arithmetic.hpp>`](https://github.com/mbeutel/slowmath/b
 
 - [Basic arithmetic operations](#basic-arithmetic-operations): addition, subtraction, multiplication, division, modulo
 - [Extended arithmetic operations](#extended-arithmetic-operations): square, exponentiation, rounding, logarithm
-- [Factorization](#factorization)
-- [Number theory](#number-theory): greatest common divisor, least common multiple
+- [Factorization](#factorization): greatest common divisor, least common multiple, integer factorization
 - [Bit operations](#bit-operations): shift left, shift right
 
 All integer arithmetic operations expect their arguments to be either of
@@ -131,76 +131,78 @@ All integer arithmetic operations expect their arguments to be either of
 [`std::integral_constant<T, V>`](https://en.cppreference.com/w/cpp/types/integral_constant) where `T` is an integral type other
 than `bool`.
 
-Arithmetic operations without prefixes or suffixes (e.g. `square()`) check their preconditions with `gsl_Expects()` and perform
-no further overflow checks.
+Most arithmetic operations come in different versions with different error handling semantics:
 
-Example:
+- Arithmetic operations without prefixes or suffixes (e.g. `square()`) check their preconditions with `gsl_Expects()` and perform
+  no further overflow checks.
 
-```c++
-int numBuckets(int numElements, int bucketSize)
-{
-    // Fails precondition check if `bucketSize == 0`.
-    return slowmath::ratio_ceili(numElements, bucketSize);
-}
-```
+  Example:
 
-Arithmetic operations with a `_checked` suffix (e.g. `square_checked()`) check their preconditions with `gsl_Expects()` and throw
-an exception of type [`std::system_error`](https://en.cppreference.com/w/cpp/error/system_error) with error
-[`std::errc::value_too_large`](https://en.cppreference.com/w/cpp/error/errc) on overflow.
+  ```c++
+  int numBuckets(int numElements, int bucketSize)
+  {
+      // Fails precondition check if `bucketSize == 0`.
+      return slowmath::ratio_ceili(numElements, bucketSize);
+  }
+  ```
 
-Example:
+- Arithmetic operations with a `_checked` suffix (e.g. `square_checked()`) check their preconditions with `gsl_Expects()` and throw
+  an exception of type [`std::system_error`](https://en.cppreference.com/w/cpp/error/system_error) with error
+  [`std::errc::value_too_large`](https://en.cppreference.com/w/cpp/error/errc) on overflow.
 
-```c++
-int main(void)
-try
-{
-    int vectorSize;
-    if (std::cin >> vectorSize)
-    {
-        int matrixSize = slowmath::square_checked(vectorSize); // throws `std::system_error` on overflow
-        ...
-    }
-}
-catch (std::runtime_error const& e)
-{
-    std::cerr << "Error: " << e.what() << '\n';
-    return 1;
-}
-```
+  Example:
 
-Arithmetic operations with a `try_` prefix (e.g. `try_square()`) check their preconditions with `gsl_Expects()` and return an
-object of type `slowmath::arithmetic_result<>`, which is defined as
-```c++
-template <typename T>
-struct arithmetic_result
-{
-    T value;
-    std::errc ec; // `ec == std::errc{ }` if operation succeeded
-};
-```
+  ```c++
+  int main(void)
+  try
+  {
+      int vectorSize;
+      if (std::cin >> vectorSize)
+      {
+          int matrixSize = slowmath::square_checked(vectorSize); // throws `std::system_error` on overflow
+          ...
+      }
+  }
+  catch (std::runtime_error const& e)
+  {
+      std::cerr << "Error: " << e.what() << '\n';
+      return 1;
+  }
+  ```
 
-Example:
+- Arithmetic operations with a `try_` prefix (e.g. `try_square()`) check their preconditions with `gsl_Expects()` and return an
+  object of type `slowmath::arithmetic_result<>`, which is defined as
+  ```c++
+  template <typename T>
+  struct arithmetic_result
+  {
+      T value;
+      std::errc ec; // `ec == std::errc{ }` if operation succeeded
+  };
+  ```
 
-```c++
-int main(void)
-{
-    int vectorSize;
-    if (std::cin >> vectorSize)
-    {
-        slowmath::arithmetic_result<int> matrixSizeR = slowmath::try_square(vectorSize);
-        if (matrixSizeR.ec != std::errc{ })
-        {
-            std::cerr << "Error: vector size too large (integer overflow)\n";
-            return 1;
-        }
-        int matrixSize = matrixSizeR.value;
-        ...
-    }
-}
-```
+  Example:
 
-Arithmetic operations with a `_failfast` suffix (e.g. `try_square()`) check their preconditions with `gsl_Expects()` and use
-`gsl_Expects()` to check for overflow.
+  ```c++
+  int main(void)
+  {
+      int vectorSize;
+      if (std::cin >> vectorSize)
+      {
+          slowmath::arithmetic_result<int> matrixSizeR = slowmath::try_square(vectorSize);
+          if (matrixSizeR.ec != std::errc{ })
+          {
+              std::cerr << "Error: vector size too large (integer overflow)\n";
+              return 1;
+          }
+          int matrixSize = matrixSizeR.value;
+          ...
+      }
+  }
+  ```
+
+- Arithmetic operations with a `_failfast` suffix (e.g. `try_square()`) check their preconditions with `gsl_Expects()` and use
+  `gsl_Expects()` to check for overflow.
 
 
 #### Basic arithmetic operations
@@ -237,15 +239,21 @@ have identical signedness.
 
 | function                                                                                                                                            | preconditions                    | result                                               |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------- |
+| `gcd_checked(a, b)` <br> `gcd_failfast(a, b)` <br> `try_gcd(a, b)`                                                                                  | a,b ∊ ℤ                          | greatest common divisor of a and b                   |
+| `lcm_checked(a, b)` <br> `lcm_failfast(a, b)` <br> `try_lcm(a, b)`                                                                                  | a,b ∊ ℤ                          | least common multiple of a and b                     |
 | `factorize_floori<E>(x,b)`                                                                                                                          | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ + r with r ≥ 0 minimal        |
 | `factorize_ceili<E>(x,b)` <br> `factorize_ceili_checked<E>(x,b)` <br> `factorize_ceili_failfast<E>(x,b)` <br> `try_factorize_ceili<E>(x,b)`         | x,b ∊ ℕ, x > 0, b > 1            | (r,e) such that x = bᵉ - r with r ≥ 0 minimal        |
 | `factorize_floori<E>(x,a,b)`                                                                                                                        | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal |
 | `factorize_ceili<E>(x,a,b)` <br> `factorize_ceili_checked<E>(x,a,b)` <br> `factorize_ceili_failfast<E>(x,a,b)` <br> `try_factorize_ceili<E>(x,a,b)` | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal |
 
-The types of all function arguments of each `factorize_floori` and `factorize_ceili` operation must have identical signedness.
+The types of all function arguments of each `gcd, `lcm`, `factorize_floori`, and `factorize_ceili` operation must have identical
+signedness.
 
-Factorization functions require a template type argument `E` that indicates which type to use to store factor exponents. They return
-a value of the aggregate type `slowmath::factorization<V, E, N>` defined as
+Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and
+[`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), these functions are supported only for C++17 and higher.
+
+The `factorize` family of functions require a template type argument `E` that indicates which type to use to store factor
+exponents. They return a value of the aggregate type `slowmath::factorization<V, E, N>` defined as
 ```c++
 template <typename V, typename E, int NumFactors>
 struct factorization;
@@ -269,19 +277,6 @@ struct factorization<V, E, 2>
     constexpr friend bool operator !=(factorization const&, factorization const&) noexcept;
 };
 ```
-
-#### Number theory
-
-| function                                                                       | preconditions | result                             |
-| ------------------------------------------------------------------------------ | ------------- | ---------------------------------- |
-| `gcd_checked(a, b)` <br> `gcd_failfast(a, b)` <br> `try_gcd(a, b)`             | a,b ∊ ℤ       | greatest common divisor of a and b |
-| `lcm_checked(a, b)` <br> `lcm_failfast(a, b)` <br> `try_lcm(a, b)`             | a,b ∊ ℤ       | least common multiple of a and b   |
-
-Both arguments of `gcd` and `lcm` must have identical signedness.
-
-Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and
-[`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), these functions are supported only for C++17 and higher.
-
 #### Bit operations
 
 | function                                                                                                              | preconditions | result                                    |
@@ -359,9 +354,8 @@ The floating-point environment operations in `<slowmath/fenv.hpp>` are currently
 with the following compilers and platforms:
 
 Compiler             | OS              | Platforms | Versions                  |
---------------------:|:----------------|-----------|--------------------------:|
-GCC                  | Linux           | x64       | 6 and newer               |
-GCC                  | MacOS           | x64       | 6 and newer               |
+--------------------:|:----------------|----------:|--------------------------:|
+GCC                  | Linux, MacOS    | x64       | 6 and newer               |
 Clang                | Linux           | x64       | 5 and newer               |
 Clang                | Windows         | x64       | 9 and newer               |
 MSVC (Visual Studio) | Windows         | x86, x64  | 19.1 (VS 2017) and newer  |
@@ -378,7 +372,8 @@ NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 10.2 and newer            |
 
 ## Use and installation
 
-*slowmath* comes with a CMake package config file that exports a target `slowmath::slowmath`:
+*slowmath* comes with a CMake package config file that exports a target `slowmath::slowmath` to which you can link your CMake
+target:
 
 ```cmake
 find_package(slowmath 0.3 REQUIRED)
@@ -409,7 +404,8 @@ line when configuring your project with CMake.
 
 ## Alternatives
 
-[1] *safe-math* in [https://github.com/nemequ/portable-snippets](https://github.com/nemequ/portable-snippets/tree/master/safe-math) by [Evan Nemerson](https://github.com/nemequ)  
+[1] *safe-math* in [https://github.com/nemequ/portable-snippets](https://github.com/nemequ/portable-snippets/tree/master/safe-math)
+by [Evan Nemerson](https://github.com/nemequ)  
 [2] [Boost.SafeNumerics](https://github.com/boostorg/safe_numerics) by [Robert Ramey](https://github.com/robertramey)  
 
 
