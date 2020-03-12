@@ -112,7 +112,7 @@ Other libraries for checked arithmetic in C and C++ exist, but
   - `square()`: does not check for overflow
   - `square_checked()`: throws `std::system_error` on overflow
   - `try_square()`: returns a value/error-code aggregate
-  - `square_failfast()`: checks for overflow using `gsl_Expects()` precondition assertions
+  - `square_failfast()`: checks for overflow using [`assert()`](https://en.cppreference.com/w/cpp/error/assert)
 
 
 ## Reference
@@ -201,8 +201,8 @@ Most arithmetic operations come in different versions with different error handl
   }
   ```
 
-- Arithmetic operations with a `_failfast` suffix (e.g. `try_square()`) check their preconditions with `gsl_Expects()` and use
-  `gsl_Expects()` to check for overflow.
+- Arithmetic operations with a `_failfast` suffix (e.g. `square_failfast()`) check their preconditions with `gsl_Expects()` and
+  use [`assert()`](https://en.cppreference.com/w/cpp/error/assert) to check for overflow.
 
 
 #### Basic arithmetic operations
@@ -246,7 +246,7 @@ have identical signedness.
 | `factorize_floori<E>(x,a,b)`                                                                                                                        | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ + r with r ≥ 0 minimal |
 | `factorize_ceili<E>(x,a,b)` <br> `factorize_ceili_checked<E>(x,a,b)` <br> `factorize_ceili_failfast<E>(x,a,b)` <br> `try_factorize_ceili<E>(x,a,b)` | x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b | (r,i,j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal |
 
-The types of all function arguments of each `gcd, `lcm`, `factorize_floori`, and `factorize_ceili` operation must have identical
+The types of all function arguments of each `gcd`, `lcm`, `factorize_floori`, and `factorize_ceili` operation must have identical
 signedness.
 
 Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and
@@ -345,10 +345,13 @@ configure your compiler to perform only IEEE-754-conforming floating-point optim
 
 ## Supported platforms
 
-The checked arithmetic operations in `<slowmath/arithmetic.hpp>` work with every compliant C++14 compiler and have no platform
-dependencies.
+The checked arithmetic operations in
+[`<slowmath/arithmetic.hpp>`](https://github.com/mbeutel/slowmath/blob/master/include/slowmath/arithmetic.hpp) should work with
+every compliant C++14 compiler and have no platform dependencies.
 
-The floating-point environment operations in `<slowmath/fenv.hpp>` are currently implemented for Windows, Linux, and MacOS.
+The floating-point environment operations in
+[`<slowmath/fenv.hpp>`](https://github.com/mbeutel/slowmath/blob/master/include/slowmath/fenv.hpp) are currently implemented for
+Windows, Linux, and MacOS.
 
 *slowmath* is [continuously tested](https://dev.azure.com/moritzbeutel/slowmath/_build/latest?definitionId=4&branchName=master)
 with the following compilers and platforms:

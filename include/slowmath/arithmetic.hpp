@@ -88,7 +88,7 @@ absi(V v)
     //
     // Computes |v|.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
@@ -133,7 +133,7 @@ absi_checked(V v)
     //
     // Computes -v.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
@@ -178,7 +178,7 @@ negate_checked(V v)
     //
     // Computes a + b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
@@ -226,7 +226,7 @@ add_checked(A a, B b)
     //
     // Computes a - b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
@@ -274,7 +274,7 @@ subtract_checked(A a, B b)
     //
     // Computes a ∙ b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
@@ -339,7 +339,7 @@ divide(N n, D d)
     //
     // Computes n ÷ d for d ≠ 0.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename N, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
@@ -410,7 +410,7 @@ modulo(N n, D d)
     //
     // Computes n mod d for d ≠ 0.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename N, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<N, D>
@@ -476,7 +476,7 @@ square(V v)
     //
     // Computes a ∙ b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename V>
 gsl_NODISCARD constexpr detail::integral_value_type<V>
@@ -537,7 +537,7 @@ shift_left(X x, S s)
     //
     // Computes x ∙ 2ˢ for x,s ∊ ℕ₀ (i.e. left-shifts x by s bits).
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename X, typename S>
 gsl_NODISCARD constexpr detail::integral_value_type<X>
@@ -604,7 +604,7 @@ shift_right(X x, S s)
     //
     // Computes ⌊x ÷ 2ˢ⌋ for x,s ∊ ℕ₀ (i.e. right-shifts x by s bits).
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename X, typename S>
 gsl_NODISCARD constexpr detail::integral_value_type<X>
@@ -671,7 +671,7 @@ powi(B b, E e)
     //
     // Computes bᵉ for e ∊ ℕ₀.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename B, typename E>
 gsl_NODISCARD constexpr detail::integral_value_type<B>
@@ -757,7 +757,7 @@ ceili(X x, D d)
     //
     // Computes ⌈x ÷ d⌉ ∙ d for x ∊ ℕ₀, d ∊ ℕ, d ≠ 0.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename X, typename D>
 gsl_NODISCARD constexpr detail::common_integral_value_type<X, D>
@@ -920,7 +920,7 @@ factorize_ceili(X x, B b)
     //
     // Given x,b ∊ ℕ, x > 0, b > 1, returns (r, e) such that x = bᵉ - r with r ≥ 0 minimal.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename E, typename X, typename B>
 gsl_NODISCARD constexpr factorization<detail::integral_value_type<X>, E, 1>
@@ -1014,7 +1014,7 @@ factorize_ceili(X x, A a, B b)
     //
     // Given x,a,b ∊ ℕ, x > 0, a,b > 1, a ≠ b, returns (r, i, j) such that x = aⁱ ∙ bʲ - r with r ≥ 0 minimal.
     //ᅟ
-    // Enforces preconditions with `gsl_Expects()`. Uses `gsl_Expects()` to raise error upon overflow.
+    // Enforces preconditions with `gsl_Expects()`. Uses `assert()` to check that no overflow occurs.
     //
 template <typename E, typename X, typename A, typename B>
 gsl_NODISCARD constexpr factorization<detail::common_integral_value_type<X, A, B>, E, 2>
@@ -1072,7 +1072,7 @@ factorize_ceili_checked(X x, A a, B b)
     //
     // Computes the greatest common divisor of a and b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>
@@ -1120,7 +1120,7 @@ gcd_checked(A a, B b)
     //
     // Computes the least common multiple of a and b.
     //ᅟ
-    // Uses `gsl_Expects()` to raise error upon overflow.
+    // Uses `assert()` to check that no overflow occurs.
     //
 template <typename A, typename B>
 gsl_NODISCARD constexpr detail::common_integral_value_type<A, B>

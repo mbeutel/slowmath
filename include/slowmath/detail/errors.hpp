@@ -4,6 +4,7 @@
 
 
 #include <cerrno>
+#include <cassert>
 #include <exception>    // for terminate()
 #include <type_traits>  // for integral_constant<>
 #include <system_error> // for errc, system_error, error_code, generic_category
@@ -142,7 +143,7 @@ struct failfast_error_handler
     static constexpr SLOWMATH_DETAIL_FORCEINLINE std::true_type
     check(bool condition)
     {
-        gsl_Expects(condition);
+        assert(condition);
         return { };
     }
     static inline unreachable_wildcard_t
@@ -166,7 +167,7 @@ struct failfast_error_handler
     static SLOWMATH_DETAIL_FORCEINLINE unreachable_wildcard_t
     passthrough_error(T)
     {
-        gsl_Expects(false);
+        std::terminate();
     }
 };
 
