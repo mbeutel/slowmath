@@ -1,8 +1,8 @@
 {
-    "name": "makeshift",
-    "version-string": "4.0.0",
-    "description": "still need to come up with something",
-    "homepage": "https://github.com/mbeutel/makeshift",
+    "name": "slowmath",
+    "version-string": "0.4.0",
+    "description": "Checked arithmetic for C++",
+    "homepage": "https://github.com/mbeutel/slowmath",
     "license": " BSL-1.0",
     "dependencies": [
         "catch2",
