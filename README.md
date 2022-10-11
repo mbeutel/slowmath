@@ -360,12 +360,12 @@ with the following compilers and platforms:
 
 Compiler             | OS              | Platforms | Versions                  |
 --------------------:|:----------------|----------:|--------------------------:|
-GCC                  | Linux, MacOS    | x64       | 6 and newer               |
-Clang                | Linux           | x64       | 5 and newer               |
-Clang                | Windows         | x64       | 9 and newer               |
+GCC                  | Linux, MacOS    | x64       | 10 and newer              |
+Clang                | Linux           | x64       | 12 and newer              |
 MSVC (Visual Studio) | Windows         | x86, x64  | 19.2 (VS 2019) and newer  |
-AppleClang (Xcode)   | MacOS           | x64       | 9.1 (Xcode 9.3) and newer |
-NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 11.7 and newer            |
+Clang                | Windows         | x64       | as supplied with VS       |
+AppleClang (Xcode)   | MacOS           | x64       | 13.1.6 and newer          |
+NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 11.8 and newer            |
 
 
 ## Dependencies
@@ -380,7 +380,7 @@ NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 11.7 and newer            |
 target:
 
 ```cmake
-find_package(slowmath 0.3 REQUIRED)
+find_package(slowmath 0.4 REQUIRED)
 
 add_executable(my_proj "main.cpp")
 target_link_libraries(my_proj PRIVATE slowmath::slowmath)
