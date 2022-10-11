@@ -7,3 +7,6 @@
 
 
 // TODO: add comprehensive tests for gcd() and lcm()
+TEST_CASE("gcd() and lcm()")
+{
+}
