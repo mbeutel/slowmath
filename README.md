@@ -112,7 +112,7 @@ Other libraries for checked arithmetic in C and C++ exist, but
   - `square()`: does not check for overflow
   - `square_checked()`: throws `std::system_error` on overflow
   - `try_square()`: returns a value/error-code aggregate
-  - `square_failfast()`: checks for overflow using [`assert()`](https://en.cppreference.com/w/cpp/error/assert)
+  - `square_failfast()`: checks for overflow using `gsl_Assert()`
 
 
 ## Reference
@@ -363,14 +363,13 @@ Compiler             | OS              | Platforms | Versions                  |
 GCC                  | Linux, MacOS    | x64       | 6 and newer               |
 Clang                | Linux           | x64       | 5 and newer               |
 Clang                | Windows         | x64       | 9 and newer               |
-MSVC (Visual Studio) | Windows         | x86, x64  | 19.1 (VS 2017) and newer  |
+MSVC (Visual Studio) | Windows         | x86, x64  | 19.2 (VS 2019) and newer  |
 AppleClang (Xcode)   | MacOS           | x64       | 9.1 (Xcode 9.3) and newer |
-NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 10.2 and newer            |
+NVCC (CUDA Toolkit)  | Linux, Windows  | x64       | 11.7 and newer            |
 
 
 ## Dependencies
 
-* [CMakeshift](https://github.com/mbeutel/CMakeshift)
 * [gsl-lite](https://github.com/gsl-lite/gsl-lite)
 * for unit tests: [Catch2](https://github.com/catchorg/Catch2)
 
@@ -387,11 +386,13 @@ add_executable(my_proj "main.cpp")
 target_link_libraries(my_proj PRIVATE slowmath::slowmath)
 ```
 
+<!--
 The library is most easily installed with [Vcpkg](https://github.com/microsoft/vcpkg/):
 
 ```
 vcpkg install slowmath
 ```
+-->
 
 It can also be configured manually:
 
