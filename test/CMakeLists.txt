@@ -56,7 +56,6 @@ add_executable(test-slowmath-cxx14
     "test-arithmetic.cpp"
     "test-bits.cpp"
     "test-factorize.cpp"
-    "test-gcd-lcm.cpp"
     "test-pow-log.cpp"
     "test-round.cpp"
 )
