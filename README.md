@@ -43,7 +43,7 @@ std::size_t computeBufferSize(std::size_t numElements, std::size_t elementSize)
 
 C++ is infamous for the abundance of [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) (UB) in the language and
 standard library specification. Perhaps most notably, signed integer overflow is undefined in C++. This defeats many naïve
-approaches at guarding against overflow:
+attempts at guarding against overflow:
 
 ```c++
 // bad code
@@ -75,7 +75,7 @@ Other libraries for checked arithmetic in C and C++ exist, but
 
 *slowmath* was built with the following goals in mind:
 
-- **Checked aritmetic operations for the existing integer types**, not a new set of integer types with checked operations.
+- **Checked arithmetic operations for the existing integer types**, not a new set of integer types with checked operations.
 
   Checking *all* arithmetic operations for overflow during testing is a reasonable demand, but for that I recommend using
   [UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html).
@@ -84,7 +84,7 @@ Other libraries for checked arithmetic in C and C++ exist, but
   [Boost.SafeNumerics](https://github.com/boostorg/safe_numerics).
 
 - **Generic routines**.  
-  I want a single function template called `multiply_checked()` rather than a host of type-encoded functions like
+  I want a single function template `multiply_checked()` rather than a host of functions with type-encoded names like
   [`UIntPtrMult()`](https://docs.microsoft.com/en-us/windows/win32/api/intsafe/nf-intsafe-uintptrmult) or
   [`psnip_safe_int16_mul()`](https://github.com/nemequ/portable-snippets/tree/master/safe-math).
 
@@ -159,7 +159,8 @@ Most arithmetic operations come in different versions with different error handl
       int vectorSize;
       if (std::cin >> vectorSize)
       {
-          int matrixSize = slowmath::square_checked(vectorSize); // throws `std::system_error` on overflow
+          // Throws `std::system_error` on overflow.
+          int matrixSize = slowmath::square_checked(vectorSize);
           ...
       }
   }
@@ -202,7 +203,7 @@ Most arithmetic operations come in different versions with different error handl
   ```
 
 - Arithmetic operations with a `_failfast` suffix (e.g. `square_failfast()`) check their preconditions with `gsl_Expects()` and
-  use [`assert()`](https://en.cppreference.com/w/cpp/error/assert) to check for overflow.
+  use `gsl_Assert()` to check for overflow.
 
 
 #### Basic arithmetic operations
@@ -250,7 +251,8 @@ The types of all function arguments of each `gcd`, `lcm`, `factorize_floori`, an
 signedness.
 
 Like [`std::gcd()`](https://en.cppreference.com/w/cpp/numeric/gcd) and
-[`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), these functions are supported only for C++17 and higher.
+[`std::lcm()`](https://en.cppreference.com/w/cpp/numeric/lcm), the functions `gcd_checked()`, `gcd_failfast()`, `try_gcd()`,
+`lcm_checked()`, `lcm_failfast()` and `try_lcm()` are supported only for C++17 and higher.
 
 The `factorize` family of functions require a template type argument `E` that indicates which type to use to store factor
 exponents. They return a value of the aggregate type `slowmath::factorization<V, E, N>` defined as

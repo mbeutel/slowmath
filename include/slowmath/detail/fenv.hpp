@@ -3,7 +3,7 @@
 #define INCLUDED_SLOWMATH_DETAIL_FENV_HPP_
 
 
-#include <cfenv> // for FE_*
+#include <cfenv>  // for FE_*
 
 #if defined(__APPLE__) && defined(__MACH__) && (defined(__i386__) || defined(__x86_64__))
 # define SLOWMATH_DETAIL_APPLE_INTEL

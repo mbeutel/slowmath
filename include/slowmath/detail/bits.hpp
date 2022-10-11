@@ -3,10 +3,10 @@
 #define INCLUDED_SLOWMATH_DETAIL_BITS_HPP_
 
 
-#include <climits> // for CHAR_BIT
+#include <climits>  // for CHAR_BIT
 
-#include <slowmath/detail/type_traits.hpp> // for max_v<>, integral_value_type<>, result_t<>
-#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp>  // for max_v<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>       // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)

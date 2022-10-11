@@ -5,8 +5,8 @@
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
 
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
-#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp>  // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>, has_wider_type<>
+#include <slowmath/detail/errors.hpp>       // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)

@@ -3,7 +3,7 @@
 #define INCLUDED_SLOWMATH_FENV_HPP_
 
 
-#include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_NODISCARD
+#include <gsl-lite/gsl-lite.hpp>  // for gsl_Expects(), gsl_NODISCARD
 
 #include <slowmath/detail/errors.hpp>
 #include <slowmath/detail/fenv.hpp>

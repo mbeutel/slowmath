@@ -4,12 +4,11 @@
 
 
 #include <cerrno>
-#include <cassert>
-#include <exception>    // for terminate()
-#include <type_traits>  // for integral_constant<>
-#include <system_error> // for errc, system_error, error_code, generic_category
+#include <exception>     // for terminate()
+#include <type_traits>   // for integral_constant<>
+#include <system_error>  // for errc, system_error, error_code, generic_category
 
-#include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_HAVE_EXCEPTIONS
+#include <gsl-lite/gsl-lite.hpp>  // for gsl_Expects(), gsl_AssertDebeug(), gsl_HAVE_EXCEPTIONS
 
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -143,7 +142,7 @@ struct failfast_error_handler
     static constexpr SLOWMATH_DETAIL_FORCEINLINE std::true_type
     check(bool condition)
     {
-        assert(condition);
+        gsl_Assert(condition);
         return { };
     }
     static inline unreachable_wildcard_t

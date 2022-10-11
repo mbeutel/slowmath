@@ -1,7 +1,9 @@
 
 #include <tuple>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
+#include <catch2/generators/catch_generators_range.hpp>
 
 #include <slowmath/arithmetic.hpp>
 

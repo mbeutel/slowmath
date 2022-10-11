@@ -5,10 +5,10 @@
 
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>
 
-#include <gsl-lite/gsl-lite.hpp> // for gsl_Expects(), gsl_CPP17_OR_GREATER
+#include <gsl-lite/gsl-lite.hpp>  // for gsl_Expects(), gsl_CPP17_OR_GREATER
 
-#include <slowmath/detail/type_traits.hpp> // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
-#include <slowmath/detail/errors.hpp>      // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
+#include <slowmath/detail/type_traits.hpp>  // for min_v<>, max_v<>, common_integral_value_type<>, integral_value_type<>, result_t<>
+#include <slowmath/detail/errors.hpp>       // for SLOWMATH_DETAIL_OVERFLOW_CHECK()
 
 
 #if defined(_MSC_VER) && !defined(__clang__)

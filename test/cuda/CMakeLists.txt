@@ -4,22 +4,19 @@
 # slowmath CUDA unit tests
 
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
-# dependencies
-find_package(CMakeshift 3.8 REQUIRED)
 
-include(CMakeshift/TargetCompileSettings)
+include(TargetCompileSettings)
 
 # CUDA tests
 add_executable(test-slowmath-cuda14)
-target_compile_features(test-slowmath-cuda14 PRIVATE cxx_std_14)
-set_target_properties(test-slowmath-cuda14 PROPERTIES CUDA_STANDARD 14)
-cmakeshift_target_compile_settings(test-slowmath-cuda14 PRIVATE default)
+target_compile_features(test-slowmath-cuda14 PRIVATE cxx_std_14 cuda_std_14)
+cmakeshift_target_compile_settings(test-slowmath-cuda14 SOURCE_FILE_ENCODING "UTF-8")
 target_link_libraries(test-slowmath-cuda14
     PRIVATE
-        test-slowmath-runner
-        test-slowmath-settings)
+        test-slowmath-settings
+)
 add_test(NAME test-slowmath-cuda14 COMMAND test-slowmath-cuda14)
 set_property(TEST test-slowmath-cuda14 PROPERTY FAIL_REGULAR_EXPRESSION "Sanitizer")
 

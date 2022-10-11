@@ -7,7 +7,7 @@
 #include <cstdint>      // for [u]int(8|16|32|64)_t
 #include <type_traits>  // for integral_constant<>, make_unsigned<>, is_signed<>, is_integral<>, is_same<>, common_type<>
 
-#include <gsl-lite/gsl-lite.hpp> // for conjunction<>
+#include <gsl-lite/gsl-lite.hpp>  // for conjunction<>
 
 
 namespace slowmath
