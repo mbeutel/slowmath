@@ -11,6 +11,7 @@ find_package(gsl-lite 0.40 REQUIRED)
 
 # library target
 add_library(slowmath INTERFACE)
+add_library(slowmath::slowmath ALIAS slowmath)
 
 # library properties
 target_include_directories(slowmath
