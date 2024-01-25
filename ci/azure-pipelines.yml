@@ -19,7 +19,7 @@ jobs:
     vcpkgRef: 42cc830d874f8e24eb4eb05bd5bb28496e3d498c
 
     cmakeBuildConfigurations: [Debug, RelWithDebInfo]
-    cmakeConfigArgs: '-DBUILD_TESTING=ON'
+    cmakeConfigArgs: '-DSLOWMATH_BUILD_TESTING=ON'
     cmakeTestArgs: '--exclude-regex cuda' # do not run CUDA tests
 
     targets:
@@ -40,7 +40,7 @@ jobs:
       cudaCompiler: NVCC
       cudaCompilerVersions: [11_8]
       platforms: [x64]
-      cmakeConfigArgs: '<cmakeConfigArgs> -DBUILD_TESTING_CUDA=ON'
+      cmakeConfigArgs: '<cmakeConfigArgs> -DSLOWMATH_BUILD_TESTING_CUDA=ON'
 
     - os: Linux
       cxxCompiler: GCC
@@ -74,7 +74,7 @@ jobs:
       cudaCompiler: NVCC
       cudaCompilerVersions: [11_8]
       platforms: [x64]
-      cmakeConfigArgs: '<cmakeConfigArgs> -DBUILD_TESTING_CUDA=ON'
+      cmakeConfigArgs: '<cmakeConfigArgs> -DSLOWMATH_BUILD_TESTING_CUDA=ON'
 
     - os: MacOS
       cxxCompiler: GCC
